@@ -1,52 +1,330 @@
 # Canteen Compass 🍽️
 
-**AI-Powered Canteen Management & Customer Recommendation System**
+**Full-Stack Canteen Management System with Role-Based Access Control**
 
-A comprehensive canteen management platform that predicts sales, recommends meals, and optimizes inventory & staffing using machine learning and AI.
+A comprehensive canteen management platform with secure authentication, role-based dashboards for Admin, Canteen Manager, and Students, featuring menu management, order tracking, and sales analytics.
+
+---
+
+## 🚀 Quick Setup Guide
+
+### Prerequisites
+
+Before you begin, ensure you have the following installed:
+- **Node.js** (v16 or higher) - [Download](https://nodejs.org/)
+- **PostgreSQL** (v12 or higher) - [Download](https://www.postgresql.org/download/)
+- **Git** - [Download](https://git-scm.com/)
+
+### Step 1: Clone the Repository
+
+```bash
+git clone https://github.com/taqihrizvi/canteen-compass.git
+cd canteen-compass
+```
+
+### Step 2: Setup Database
+
+1. **Create the database:**
+   ```bash
+   createdb canteen_compass
+   ```
+   
+   Or using psql:
+   ```bash
+   psql -U postgres -c "CREATE DATABASE canteen_compass;"
+   ```
+
+2. **Initialize the schema:**
+   ```bash
+   psql -U postgres -d canteen_compass -f backend/database/init.sql
+   ```
+
+### Step 3: Configure Backend
+
+1. **Navigate to backend folder:**
+   ```bash
+   cd backend
+   ```
+
+2. **Install dependencies:**
+   ```bash
+   npm install
+   ```
+
+3. **Create `.env` file:**
+   ```bash
+   cp .env.example .env
+   ```
+
+4. **Update `.env` with your PostgreSQL credentials:**
+   ```env
+   DB_HOST=localhost
+   DB_PORT=5432
+   DB_USER=postgres
+   DB_PASSWORD=your_postgres_password
+   DB_NAME=canteen_compass
+   
+   JWT_SECRET=your-super-secret-jwt-key-change-in-production
+   JWT_REFRESH_SECRET=your-refresh-secret-key-change-in-production
+   JWT_EXPIRES_IN=1h
+   JWT_REFRESH_EXPIRES_IN=7d
+   
+   PORT=3001
+   NODE_ENV=development
+   ```
+
+5. **Seed the database with sample data:**
+   ```bash
+   npm run seed
+   ```
+
+6. **Start the backend server:**
+   ```bash
+   npm run dev
+   ```
+   
+   Backend will run on: **http://localhost:3001**
+
+### Step 4: Configure Frontend
+
+1. **Open a new terminal and navigate to project root:**
+   ```bash
+   cd canteen-compass
+   ```
+
+2. **Install dependencies:**
+   ```bash
+   npm install
+   ```
+
+3. **Create `.env` file:**
+   ```bash
+   cp .env.example .env
+   ```
+
+4. **Update `.env` file:**
+   ```env
+   VITE_API_BASE_URL=http://localhost:3001
+   ```
+
+5. **Start the frontend server:**
+   ```bash
+   npm run dev
+   ```
+   
+   Frontend will run on: **http://localhost:5173** or **http://localhost:8080**
+
+---
+
+## 🔑 Default Login Credentials
+
+After seeding the database, use these credentials to login:
+
+| Role | Email | Password |
+|------|-------|----------|
+| **Admin** | admin@canteen.ai | Admin@123 |
+| **Canteen Manager** | manager@canteen.ai | Admin@123 |
+| **Student** | john.smith@student.edu | Admin@123 |
+
+---
+
+## 📁 Project Structure
+
+```
+canteen-compass/
+├── backend/                 # Node.js + Express + TypeScript backend
+│   ├── src/
+│   │   ├── controllers/    # Request handlers
+│   │   ├── services/       # Business logic
+│   │   ├── routes/         # API routes
+│   │   ├── middleware/     # Auth & error handling
+│   │   ├── config/         # Database config
+│   │   ├── types/          # TypeScript types
+│   │   └── server.ts       # Express app entry
+│   ├── database/
+│   │   ├── init.sql        # Database schema
+│   │   └── seed.sql        # Sample data
+│   └── package.json
+├── src/                     # React + TypeScript frontend
+│   ├── components/         # Reusable UI components
+│   ├── pages/              # Page components
+│   ├── contexts/           # React contexts (Auth)
+│   ├── lib/                # API client & utilities
+│   └── App.tsx             # Main app component
+├── public/                 # Static assets
+└── README.md
+```
+
+---
 
 ## 📋 Project Overview
 
-Canteen Compass is a full-featured dashboard application designed for canteen and food service management. It provides real-time insights into sales performance, inventory management, customer analytics, and AI-powered forecasting to optimize operations and enhance customer experience.
+Canteen Compass is a full-featured canteen management system with three distinct user roles:
 
-## ✨ Key Features
+### 🔐 User Roles & Features
 
-### 🔐 Authentication & User Management
-- **Customer Login/Register**: Secure authentication system with JWT tokens
-- **User Roles**: Support for customers, staff, and admin roles
-- **Loyalty Tiers**: Bronze, Silver, Gold, Platinum customer segmentation
-- **Protected Routes**: Secure access to dashboard features
-- **Profile Management**: User preferences and dietary restrictions
+#### **Admin Dashboard**
+- Create and manage users (Admin, Manager, Student)
+- View system-wide statistics
+- Manage user accounts (Edit, Delete, Activate/Deactivate)
+- Full access to all features
 
-### 🎯 Personalized Recommendations (AI-Powered)
-- **Smart Meal Suggestions**: Based on customer history, time of day, weather, and trends
-- **Match Score Algorithm**: 95%+ accuracy in predicting user preferences
-- **Context-Aware**: Considers dietary preferences, loyalty tier, purchase history
-- **Combo Deals**: Intelligent bundling with savings calculator
-- **Add-On Suggestions**: Complementary items to complete meals
-- **Trending Items**: Real-time popular dishes with social proof
-- **Weather Integration**: Recommends hot/cold items based on temperature
-- **Time-Based**: Different suggestions for breakfast, lunch, dinner
+#### **Canteen Manager Dashboard**
+- View sales insights (Daily, Weekly, Monthly)
+- Manage incoming orders
+- Update order status (Pending → Preparing → Ready → Completed)
+- Create, edit, and delete menu items
+- Track revenue and order metrics
 
-### 📊 Sales Forecasting (Prophet Algorithm)
-- **Daily Predictions**: 7-day forecast with 94%+ accuracy
-- **Hourly Breakdown**: Peak hour identification for staffing optimization
-- **Category-Level**: Forecast by menu category (Hot Meals, Salads, Beverages, etc.)
-- **Item-Level**: Top performing items prediction
-- **Confidence Scores**: Statistical confidence for each prediction
-- **External Factors**: Weather, events, seasonality, day of week impact analysis
-- **Seasonality Detection**: Automatic trend and pattern recognition
-- **Promotion Impact**: Measure effect of promotional campaigns
-- **Visual Charts**: Interactive Recharts visualizations
+#### **Student Dashboard**
+- Browse available menu items
+- View personalized food suggestions
+- Place orders with quantity selection
+- View order history
+- Cancel pending orders
 
-### 📦 Inventory & Margin Optimization
-- **Real-Time Stock Tracking**: Current vs optimal inventory levels
-- **Smart Reorder Alerts**: Critical, high, and medium urgency suggestions
-- **Overstocked Item Promotion**: Reduce waste by promoting excess inventory
-- **Margin Analysis**: Profit margin per item and category
-- **Bundle Recommendations**: High-margin combo suggestions
-- **Usage Patterns**: High/medium/low consumption tracking
-- **Cost Management**: Track cost per unit and total inventory value
-- **Waste Reduction**: AI suggestions to minimize spoilage
+---
+
+## 🛠️ Tech Stack
+
+### Backend
+- **Node.js** + **Express** - Server framework
+- **TypeScript** - Type safety
+- **PostgreSQL** - Database
+- **JWT** - Authentication
+- **bcryptjs** - Password hashing
+- **CORS** - Cross-origin resource sharing
+- **Helmet** - Security headers
+- **Morgan** - HTTP request logger
+
+### Frontend
+- **React 18** - UI framework
+- **TypeScript** - Type safety
+- **Vite** - Build tool
+- **React Router v6** - Client-side routing
+- **Axios** - HTTP client
+- **Tailwind CSS** - Styling
+- **shadcn/ui** - Component library
+- **Lucide React** - Icons
+- **Sonner** - Toast notifications
+
+---
+
+## 📡 API Endpoints
+
+### Authentication
+```
+POST   /api/auth/login          # Login with email & password
+POST   /api/auth/refresh        # Refresh access token
+GET    /api/auth/me             # Get current user
+```
+
+### Admin Routes (Requires Admin Role)
+```
+POST   /api/admin/users         # Create new user
+GET    /api/admin/users         # List all users
+PUT    /api/admin/users/:id     # Update user
+DELETE /api/admin/users/:id     # Delete user
+GET    /api/admin/stats         # System statistics
+```
+
+### Student Routes (Requires Student Role)
+```
+GET    /api/student/suggestions     # Get food suggestions
+GET    /api/student/menus           # Browse available menus
+POST   /api/student/orders          # Place an order
+GET    /api/student/orders          # Order history
+GET    /api/student/orders/:id      # Get order details
+DELETE /api/student/orders/:id      # Cancel order
+```
+
+### Manager Routes (Requires Canteen Manager Role)
+```
+GET    /api/manager/sales           # Sales insights
+GET    /api/manager/orders          # Incoming orders
+PUT    /api/manager/orders/:id      # Update order status
+POST   /api/manager/menus           # Create menu item
+GET    /api/manager/menus           # List menu items
+PUT    /api/manager/menus/:id       # Update menu item
+DELETE /api/manager/menus/:id       # Delete menu item
+```
+
+---
+
+## 🔒 Security Features
+
+- **JWT Authentication** - Secure token-based auth with access & refresh tokens
+- **Bcrypt Password Hashing** - 10 rounds of salting
+- **Role-Based Access Control (RBAC)** - Route protection by user role
+- **CORS Protection** - Configured allowed origins
+- **Helmet Security Headers** - XSS, CSRF, clickjacking protection
+- **SQL Injection Protection** - Parameterized queries
+- **No Public Signups** - Only admins can create users
+
+---
+
+## 🐛 Troubleshooting
+
+### Database Connection Issues
+```bash
+# Check if PostgreSQL is running
+Get-Service postgresql*
+
+# Test connection
+psql -U postgres -d canteen_compass -c "SELECT 1;"
+```
+
+### Backend Not Starting
+```bash
+# Check if port 3001 is already in use
+netstat -ano | findstr :3001
+
+# Kill the process or change PORT in .env
+```
+
+### Frontend API Errors
+- Verify backend is running on `http://localhost:3001`
+- Check `.env` has correct `VITE_API_BASE_URL`
+- Clear browser cache and reload
+
+### Login Issues
+- Ensure database is seeded: `npm run seed` in backend folder
+- Verify correct credentials from table above
+- Check browser console for CORS errors
+
+---
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+---
+
+## 📄 License
+
+This project is licensed under the MIT License.
+
+---
+
+## 👥 Authors
+
+- **Taqi Rizvi** - [@taqihrizvi](https://github.com/taqihrizvi)
+
+---
+
+## 📞 Support
+
+For issues and questions:
+- Open an issue on GitHub
+- Email: taqihrizvi@example.com
+
+---
+
+**Made with ❤️ for better canteen management**
 
 ### 👥 Customer Segmentation & Analytics
 - **Behavioral Segmentation**: Group customers by preferences and habits
