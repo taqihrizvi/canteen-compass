@@ -1,4 +1,6 @@
 import { NavLink } from "@/components/NavLink";
+import { useAuth } from "@/contexts/AuthContext";
+import { Button } from "@/components/ui/button";
 import { 
   LayoutDashboard, 
   TrendingUp, 
@@ -6,11 +8,14 @@ import {
   Package, 
   Users, 
   Settings,
-  ChefHat
+  ChefHat,
+  LogOut,
+  UserCog
 } from "lucide-react";
 
 const navigation = [
-  { name: "Dashboard", href: "/", icon: LayoutDashboard },
+  { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
+  { name: "User Management", href: "/users", icon: UserCog },
   { name: "Sales Forecast", href: "/forecast", icon: TrendingUp },
   { name: "Recommendations", href: "/recommendations", icon: Lightbulb },
   { name: "Inventory", href: "/inventory", icon: Package },
@@ -19,6 +24,17 @@ const navigation = [
 ];
 
 export const Sidebar = () => {
+  const { user, logout } = useAuth();
+
+  const getInitials = (name: string) => {
+    return name
+      .split(' ')
+      .map(n => n[0])
+      .join('')
+      .toUpperCase()
+      .slice(0, 2);
+  };
+
   return (
     <aside className="fixed left-0 top-0 h-screen w-64 bg-sidebar border-r border-sidebar-border">
       <div className="flex flex-col h-full">
@@ -49,16 +65,31 @@ export const Sidebar = () => {
         </nav>
 
         {/* User section */}
-        <div className="p-4 border-t border-sidebar-border">
+        <div className="p-4 border-t border-sidebar-border space-y-2">
           <div className="flex items-center gap-3 px-3 py-2">
             <div className="w-8 h-8 rounded-full bg-gradient-primary flex items-center justify-center">
-              <span className="text-sm font-medium text-primary-foreground">AC</span>
+              <span className="text-sm font-medium text-primary-foreground">
+                {user ? getInitials(user.name) : 'U'}
+              </span>
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-sidebar-foreground truncate">Admin User</p>
-              <p className="text-xs text-muted-foreground truncate">admin@canteen.ai</p>
+              <p className="text-sm font-medium text-sidebar-foreground truncate">
+                {user?.name || 'User'}
+              </p>
+              <p className="text-xs text-muted-foreground truncate">
+                {user?.email || 'user@example.com'}
+              </p>
             </div>
           </div>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="w-full justify-start text-muted-foreground hover:text-foreground"
+            onClick={logout}
+          >
+            <LogOut className="w-4 h-4 mr-2" />
+            Logout
+          </Button>
         </div>
       </div>
     </aside>

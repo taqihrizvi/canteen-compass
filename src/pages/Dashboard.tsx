@@ -1,7 +1,10 @@
+import { useEffect } from "react";
 import { DashboardLayout } from "@/components/Layout/DashboardLayout";
 import { MetricCard } from "@/components/Dashboard/MetricCard";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { TrendingUp, DollarSign, Package, Users, AlertTriangle, CheckCircle } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { TrendingUp, DollarSign, Package, Users, AlertTriangle, CheckCircle, Bell } from "lucide-react";
+import { showDemoNotifications } from "@/services/notificationService";
 
 const Dashboard = () => {
   const metrics = [
@@ -51,10 +54,20 @@ const Dashboard = () => {
 
   return (
     <DashboardLayout>
-      {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-foreground mb-2">Dashboard</h1>
-        <p className="text-muted-foreground">Welcome back! Here's what's happening today.</p>
+      {/* Header with Demo Notifications Button */}
+      <div className="mb-8 flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold text-foreground mb-2">Dashboard</h1>
+          <p className="text-muted-foreground">Welcome back! Here's what's happening today.</p>
+        </div>
+        <Button 
+          variant="outline" 
+          onClick={() => showDemoNotifications('admin')}
+          className="gap-2"
+        >
+          <Bell className="h-4 w-4" />
+          Test Notifications
+        </Button>
       </div>
 
       {/* Metrics Grid */}
