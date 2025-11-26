@@ -58,4 +58,24 @@ export class AuthController {
     // In a production app, you might want to blacklist the token
     res.json({ message: 'Logout successful' });
   }
+
+  async updatePreferences(req: AuthRequest, res: Response) {
+    try {
+      if (!req.user) {
+        return res.status(401).json({ error: 'Authentication required' });
+      }
+
+      const { allergenIds, dietaryPreferenceIds } = req.body;
+
+      const user = await authService.updateUserPreferences(
+        req.user.id,
+        allergenIds || [],
+        dietaryPreferenceIds || []
+      );
+
+      res.json({ message: 'Preferences updated successfully', user });
+    } catch (error: any) {
+      res.status(error.statusCode || 500).json({ error: error.message });
+    }
+  }
 }

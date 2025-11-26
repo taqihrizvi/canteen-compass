@@ -9,5 +9,6 @@ router.post('/login', (req, res) => authController.login(req, res));
 router.post('/refresh', (req, res) => authController.refreshToken(req, res));
 router.post('/logout', authenticateToken, (req, res) => authController.logout(req, res));
 router.get('/me', authenticateToken, (req, res) => authController.getCurrentUser(req, res));
+router.put('/preferences', authenticateToken, (req, res) => authController.updatePreferences(req, res));
 
 export default router;

@@ -52,7 +52,7 @@ export const CustomerLayout = ({ children }: CustomerLayoutProps) => {
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
             <Link to="/menu" className="flex items-center gap-2">
-              <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center">
+              <div className="w-10 h-10 rounded-lg bg-[#1B56A5] flex items-center justify-center">
                 <UtensilsCrossed className="w-6 h-6 text-white" />
               </div>
               <div className="hidden sm:block">

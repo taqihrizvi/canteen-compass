@@ -4,6 +4,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { useState, useEffect } from "react";
+import { useToast } from "@/hooks/use-toast";
 import { 
   Lightbulb, 
   TrendingUp, 
@@ -15,11 +20,202 @@ import {
   Users,
   ShoppingCart,
   Star,
-  Flame
+  Flame,
+  Plus,
+  X
 } from "lucide-react";
+
+interface MenuItem {
+  id: number;
+  name: string;
+  price: number;
+  category: string;
+}
+
+interface ComboDeals {
+  id: number;
+  name: string;
+  description?: string;
+  item_ids: number[];
+  item_names?: string[];
+  price: number;
+  savings: number;
+  is_active: boolean;
+}
 
 const Recommendations = () => {
   const { user } = useAuth();
+  const { toast } = useToast();
+  const [isComboModalOpen, setIsComboModalOpen] = useState(false);
+  const [selectedCombo, setSelectedCombo] = useState<ComboDeals | null>(null);
+  const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
+  const [selectedItems, setSelectedItems] = useState<MenuItem[]>([]);
+  const [loadingMenu, setLoadingMenu] = useState(false);
+  const [comboDealsList, setComboDealsList] = useState<ComboDeals[]>([]);
+  const [loadingCombos, setLoadingCombos] = useState(false);
+  const [comboForm, setComboForm] = useState({
+    name: '',
+    description: ''
+  });
+
+  useEffect(() => {
+    fetchCombos();
+  }, []);
+
+  const fetchCombos = async () => {
+    setLoadingCombos(true);
+    try {
+      const token = localStorage.getItem('accessToken');
+      const response = await fetch('http://localhost:3001/api/combos', {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        setComboDealsList(data);
+      }
+    } catch (error) {
+      console.error('Error fetching combos:', error);
+    } finally {
+      setLoadingCombos(false);
+    }
+  };
+
+  const handleOpenModal = async (combo?: ComboDeals) => {
+    if (combo) {
+      setSelectedCombo(combo);
+      setComboForm({
+        name: combo.name,
+        description: combo.description || ''
+      });
+    } else {
+      setSelectedCombo(null);
+      setComboForm({
+        name: '',
+        description: ''
+      });
+    }
+    setSelectedItems([]);
+    setIsComboModalOpen(true);
+    
+    // Fetch menu items
+    await fetchMenuItems();
+  };
+
+  const fetchMenuItems = async () => {
+    setLoadingMenu(true);
+    try {
+      const token = localStorage.getItem('accessToken');
+      const response = await fetch('http://localhost:3001/api/menu/menu-items', {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      
+      if (!response.ok) throw new Error('Failed to fetch menu items');
+      
+      const data = await response.json();
+      setMenuItems(data);
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to load menu items",
+        variant: "destructive"
+      });
+    } finally {
+      setLoadingMenu(false);
+    }
+  };
+
+  const handleCloseModal = () => {
+    setIsComboModalOpen(false);
+    setSelectedCombo(null);
+    setSelectedItems([]);
+    setMenuItems([]);
+  };
+
+  const handleSelectItem = (item: MenuItem) => {
+    if (!selectedItems.find(i => i.id === item.id)) {
+      setSelectedItems([...selectedItems, item]);
+    }
+  };
+
+  const handleRemoveItem = (itemId: number) => {
+    setSelectedItems(selectedItems.filter(i => i.id !== itemId));
+  };
+
+  const calculateComboPrice = () => {
+    const totalPrice = selectedItems.reduce((sum, item) => {
+      const price = typeof item.price === 'number' ? item.price : parseFloat(item.price) || 0;
+      return sum + price;
+    }, 0);
+    const discountedPrice = totalPrice * 0.9; // 10% discount
+    const savings = totalPrice - discountedPrice;
+    return { 
+      totalPrice: Number(totalPrice), 
+      discountedPrice: Number(discountedPrice), 
+      savings: Number(savings) 
+    };
+  };
+
+  const handleSaveCombo = async () => {
+    if (!comboForm.name.trim()) {
+      toast({
+        title: "Validation Error",
+        description: "Please enter a combo name",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    if (selectedItems.length === 0) {
+      toast({
+        title: "Validation Error",
+        description: "Please select at least one item",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    try {
+      const token = localStorage.getItem('accessToken');
+      const { discountedPrice, savings } = calculateComboPrice();
+      
+      const comboData = {
+        name: comboForm.name,
+        description: comboForm.description,
+        item_ids: selectedItems.map(item => item.id),
+        price: parseFloat(discountedPrice.toFixed(2)),
+        savings: parseFloat(savings.toFixed(2))
+      };
+
+      const response = await fetch('http://localhost:3001/api/combos', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(comboData)
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to save combo');
+      }
+      
+      toast({
+        title: "Success",
+        description: `Combo "${comboForm.name}" saved successfully`,
+      });
+      
+      await fetchCombos();
+      handleCloseModal();
+    } catch (error) {
+      console.error('Error saving combo:', error);
+      toast({
+        title: "Error",
+        description: "Failed to save combo",
+        variant: "destructive"
+      });
+    }
+  };
 
   // Personalized meal recommendations based on user profile
   const personalizedMeals = [
@@ -150,48 +346,23 @@ const Recommendations = () => {
     <DashboardLayout>
       <div className="space-y-6">
         {/* Header */}
-        <div>
-          <h1 className="text-3xl font-bold mb-2">Personalized Recommendations</h1>
-          <p className="text-muted-foreground">
-            AI-powered meal suggestions tailored for you, {user?.name}
-          </p>
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold mb-2">Personalized Recommendations</h1>
+            <p className="text-muted-foreground">
+              AI-powered meal suggestions tailored for you, {user?.name}
+            </p>
+          </div>
+          <Button onClick={() => handleOpenModal()} className="gap-2 bg-gradient-primary">
+            <Plus className="w-4 h-4" />
+            Create Combo
+          </Button>
         </div>
 
-        {/* User Context */}
-        <Card className="border-primary/20 bg-gradient-to-r from-primary/5 to-transparent">
-          <CardContent className="pt-6">
-            <div className="flex items-start gap-4">
-              <Sparkles className="h-8 w-8 text-primary" />
-              <div className="flex-1">
-                <h3 className="font-semibold text-lg mb-2">Your Profile Insights</h3>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
-                  <div className="flex items-center gap-2">
-                    <Heart className="h-4 w-4 text-rose-500" />
-                    <span>Student Account</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Leaf className="h-4 w-4 text-green-500" />
-                    <span>Preferences: Vegetarian</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Clock className="h-4 w-4 text-blue-500" />
-                    <span>Time: Lunch (12:30 PM)</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Cloud className="h-4 w-4 text-gray-500" />
-                    <span>Weather: Cloudy, 18°C</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
         {/* Main Recommendations Tabs */}
-        <Tabs defaultValue="for-you" className="space-y-4">
+        <Tabs defaultValue="combos" className="space-y-4">
           <TabsList>
-            <TabsTrigger value="for-you">For You</TabsTrigger>
-            <TabsTrigger value="combos">Combo Deals</TabsTrigger>
+            <TabsTrigger value="combos">Create Combos</TabsTrigger>
             <TabsTrigger value="trending">Trending</TabsTrigger>
             <TabsTrigger value="business">Business Insights</TabsTrigger>
           </TabsList>
@@ -282,39 +453,48 @@ const Recommendations = () => {
           </TabsContent>
 
           <TabsContent value="combos" className="space-y-4">
-            <div className="grid gap-4 md:grid-cols-2">
-              {comboDeals.map((combo) => (
-                <Card key={combo.id} className="hover:shadow-lg transition-shadow">
-                  <CardHeader>
-                    <div className="flex items-start justify-between">
-                      <div className="text-5xl mb-2">{combo.image}</div>
-                      <Badge variant="secondary" className="gap-1">
-                        <Star className="h-3 w-3 fill-current" />
-                        {combo.matchScore}% Match
-                      </Badge>
-                    </div>
-                    <CardTitle>{combo.name}</CardTitle>
-                    <CardDescription>
-                      {combo.items.join(" + ")}
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <span className="text-2xl font-bold">£{combo.price}</span>
-                        <div className="text-sm text-green-600 font-medium">
-                          Save £{combo.savings.toFixed(2)}
-                        </div>
+            {loadingCombos ? (
+              <div className="text-center py-8">
+                <p className="text-muted-foreground">Loading combo deals...</p>
+              </div>
+            ) : comboDealsList.length === 0 ? (
+              <div className="text-center py-8">
+                <p className="text-muted-foreground">No combo deals available. Create your first combo!</p>
+              </div>
+            ) : (
+              <div className="grid gap-4 md:grid-cols-2">
+                {comboDealsList.map((combo) => (
+                  <Card key={combo.id} className="hover:shadow-lg transition-shadow">
+                    <CardHeader>
+                      <div className="flex items-start justify-between">
+                        <div className="text-5xl mb-2">🍱</div>
+                        <Badge variant="default" className="gap-1">
+                          Active
+                        </Badge>
                       </div>
-                      <Button>
-                        <ShoppingCart className="h-4 w-4 mr-2" />
-                        Add Combo
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
+                      <CardTitle>{combo.name}</CardTitle>
+                      <CardDescription>
+                        {combo.description || (combo.item_names && Array.isArray(combo.item_names) ? combo.item_names.join(" + ") : 'Combo deal')}
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <span className="text-2xl font-bold">£{typeof combo.price === 'number' ? combo.price.toFixed(2) : parseFloat(combo.price).toFixed(2)}</span>
+                          <div className="text-sm text-green-600 font-medium">
+                            Save £{typeof combo.savings === 'number' ? combo.savings.toFixed(2) : parseFloat(combo.savings).toFixed(2)}
+                          </div>
+                        </div>
+                        <Button onClick={() => handleOpenModal(combo)}>
+                          <ShoppingCart className="h-4 w-4 mr-2" />
+                          Edit Combo
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            )}
           </TabsContent>
 
           <TabsContent value="trending" className="space-y-4">
@@ -450,6 +630,145 @@ const Recommendations = () => {
             </Card>
           </TabsContent>
         </Tabs>
+
+        {/* Combo Modal */}
+        <Dialog open={isComboModalOpen} onOpenChange={setIsComboModalOpen}>
+          <DialogContent className="sm:max-w-[900px] max-h-[90vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle>{selectedCombo ? 'Edit Combo' : 'Create New Combo'}</DialogTitle>
+              <DialogDescription>
+                Select menu items to create a combo deal. Price is automatically calculated with 10% discount.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="space-y-4 py-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="combo-name">Combo Name</Label>
+                  <Input
+                    id="combo-name"
+                    placeholder="e.g., Lunch Power Combo"
+                    value={comboForm.name}
+                    onChange={(e) => setComboForm({ ...comboForm, name: e.target.value })}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="combo-description">Description (optional)</Label>
+                  <Input
+                    id="combo-description"
+                    placeholder="e.g., Perfect for busy afternoons"
+                    value={comboForm.description}
+                    onChange={(e) => setComboForm({ ...comboForm, description: e.target.value })}
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                {/* Available Items List */}
+                <div className="space-y-2">
+                  <Label>Available Menu Items</Label>
+                  <div className="border rounded-lg p-4 h-[300px] overflow-y-auto bg-muted/30">
+                    {loadingMenu ? (
+                      <p className="text-sm text-muted-foreground text-center py-8">Loading menu items...</p>
+                    ) : menuItems.length === 0 ? (
+                      <p className="text-sm text-muted-foreground text-center py-8">No menu items available</p>
+                    ) : (
+                      <div className="space-y-2">
+                        {menuItems.map((item) => (
+                          <div
+                            key={item.id}
+                            onClick={() => handleSelectItem(item)}
+                            className={`p-3 rounded-lg border cursor-pointer transition-colors ${
+                              selectedItems.find(i => i.id === item.id)
+                                ? 'bg-muted border-muted cursor-not-allowed opacity-50'
+                                : 'hover:bg-accent hover:border-primary bg-background'
+                            }`}
+                          >
+                            <div className="flex justify-between items-start">
+                              <div>
+                                <p className="font-medium text-sm">{item.name}</p>
+                                <p className="text-xs text-muted-foreground">{item.category}</p>
+                              </div>
+                              <p className="font-semibold text-sm">£{typeof item.price === 'number' ? item.price.toFixed(2) : parseFloat(item.price).toFixed(2)}</p>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Selected Items List */}
+                <div className="space-y-2">
+                  <Label>Selected Items ({selectedItems.length})</Label>
+                  <div className="border rounded-lg p-4 h-[300px] overflow-y-auto bg-primary/5">
+                    {selectedItems.length === 0 ? (
+                      <p className="text-sm text-muted-foreground text-center py-8">
+                        Click items from the left to add them to the combo
+                      </p>
+                    ) : (
+                      <div className="space-y-2">
+                        {selectedItems.map((item) => (
+                          <div
+                            key={item.id}
+                            className="p-3 rounded-lg border bg-background flex justify-between items-start"
+                          >
+                            <div>
+                              <p className="font-medium text-sm">{item.name}</p>
+                              <p className="text-xs text-muted-foreground">{item.category}</p>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <p className="font-semibold text-sm">£{typeof item.price === 'number' ? item.price.toFixed(2) : parseFloat(item.price).toFixed(2)}</p>
+                              <Button
+                                size="sm"
+                                variant="ghost"
+                                className="h-6 w-6 p-0 hover:bg-destructive hover:text-destructive-foreground"
+                                onClick={() => handleRemoveItem(item.id)}
+                              >
+                                <X className="h-4 w-4" />
+                              </Button>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              {/* Price Calculation */}
+              {selectedItems.length > 0 && (
+                <div className="border rounded-lg p-4 bg-accent/50">
+                  <div className="space-y-2">
+                    <div className="flex justify-between text-sm">
+                      <span className="text-muted-foreground">Total Price:</span>
+                      <span className="font-medium">£{calculateComboPrice().totalPrice.toFixed(2)}</span>
+                    </div>
+                    <div className="flex justify-between text-sm">
+                      <span className="text-muted-foreground">Discount (10%):</span>
+                      <span className="font-medium text-green-600">-£{calculateComboPrice().savings.toFixed(2)}</span>
+                    </div>
+                    <div className="border-t pt-2 flex justify-between">
+                      <span className="font-semibold">Combo Price:</span>
+                      <span className="font-bold text-lg text-primary">£{calculateComboPrice().discountedPrice.toFixed(2)}</span>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+            <div className="flex justify-end gap-3">
+              <Button variant="outline" onClick={handleCloseModal}>
+                Cancel
+              </Button>
+              <Button 
+                onClick={handleSaveCombo} 
+                className="bg-gradient-primary"
+                disabled={selectedItems.length < 2}
+              >
+                Save Combo Deal
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
       </div>
     </DashboardLayout>
   );

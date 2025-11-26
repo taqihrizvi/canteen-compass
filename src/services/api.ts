@@ -1,4 +1,4 @@
-// API Service Layer for Canteen Compass
+// API Service Layer for CanteenAI
 // This file contains mock API services that can be replaced with real backend calls
 
 export interface User {

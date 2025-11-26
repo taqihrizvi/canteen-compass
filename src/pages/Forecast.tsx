@@ -87,7 +87,7 @@ const Forecast = () => {
       icon: <PartyPopper className="h-5 w-5" />,
       status: "Local festival",
       impact: "+35% traffic",
-      color: "text-purple-500",
+      color: "text-primary",
     },
     {
       factor: "Seasonality",
@@ -177,7 +177,7 @@ const Forecast = () => {
           <Card>
             <CardContent className="p-6">
               <div className="flex items-center gap-3 mb-3">
-                <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
+                <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary to-blue-600 flex items-center justify-center">
                   <Clock className="w-5 h-5 text-white" />
                 </div>
                 <h3 className="font-semibold">Peak Hour</h3>

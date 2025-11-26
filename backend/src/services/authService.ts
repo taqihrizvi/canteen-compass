@@ -80,8 +80,21 @@ export class AuthService {
 
   async getCurrentUser(userId: number) {
     const result = await pool.query(
-      'SELECT id, name, email, role, created_at FROM users WHERE id = $1 AND is_active = true',
+      'SELECT id, name, email, role, allergen_ids, dietary_preference_ids, created_at FROM users WHERE id = $1 AND is_active = true',
       [userId]
+    );
+
+    if (result.rows.length === 0) {
+      throw new AppError('User not found', 404);
+    }
+
+    return result.rows[0];
+  }
+
+  async updateUserPreferences(userId: number, allergenIds: number[], dietaryPreferenceIds: number[]) {
+    const result = await pool.query(
+      'UPDATE users SET allergen_ids = $1, dietary_preference_ids = $2, updated_at = CURRENT_TIMESTAMP WHERE id = $3 AND is_active = true RETURNING id, name, email, role, allergen_ids, dietary_preference_ids',
+      [allergenIds, dietaryPreferenceIds, userId]
     );
 
     if (result.rows.length === 0) {

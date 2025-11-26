@@ -63,9 +63,9 @@ const Login = () => {
   ];
 
   return (
-    <div className="min-h-screen flex bg-gradient-to-br from-orange-50 via-amber-50 to-green-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
+    <div className="min-h-screen flex bg-[#EDF2F9] dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
       {/* Left Side - Branding & Features */}
-      <div className="hidden lg:flex lg:w-1/2 flex-col justify-between p-12 bg-gradient-to-br from-primary/90 to-purple-600/90 text-white relative overflow-hidden">
+      <div className="hidden lg:flex lg:w-1/2 flex-col justify-between p-12 bg-[#1B56A5] text-white relative overflow-hidden">
         <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxwYXRoIGQ9Ik0zNiAxOGMzLjMxNCAwIDYgMi42ODYgNiA2cy0yLjY4NiA2LTYgNi02LTIuNjg2LTYtNiAyLjY4Ni02IDYtNiIgc3Ryb2tlPSIjZmZmIiBzdHJva2Utb3BhY2l0eT0iLjEiLz48L2c+PC9zdmc+')] opacity-20"></div>
         
         <div className="relative z-10">
@@ -83,7 +83,7 @@ const Login = () => {
               <ChefHat className="w-7 h-7" />
             </div>
             <div>
-              <h1 className="text-3xl font-bold">Canteen Compass</h1>
+              <h1 className="text-3xl font-bold">CanteenAI</h1>
               <p className="text-white/80">AI-Powered Management</p>
             </div>
           </div>
@@ -169,7 +169,7 @@ const Login = () => {
                     ))}
                   </div>
                   <p className="text-xs text-blue-600 dark:text-blue-400 mt-2">
-                    Password: Use any password for demo
+                    Password: <span className="font-semibold">Admin@123</span>
                   </p>
                 </div>
 

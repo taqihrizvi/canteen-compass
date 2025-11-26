@@ -2,14 +2,14 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useNavigate } from "react-router-dom";
-import { 
-  ChefHat, 
-  TrendingUp, 
-  ShoppingCart, 
-  Users, 
-  BarChart3, 
-  Brain, 
-  Bell, 
+import {
+  ChefHat,
+  TrendingUp,
+  ShoppingCart,
+  Users,
+  BarChart3,
+  Brain,
+  Bell,
   Calendar,
   Package,
   Sparkles,
@@ -25,7 +25,7 @@ const Home = () => {
       icon: Brain,
       title: "AI-Powered Recommendations",
       description: "Smart menu suggestions based on customer preferences, dietary restrictions, and purchase history.",
-      color: "text-purple-500"
+      color: "text-[#1B5FA7]"
     },
     {
       icon: TrendingUp,
@@ -74,14 +74,14 @@ const Home = () => {
       description: "Complete control over operations with advanced analytics, forecasting, and inventory management.",
       features: ["Sales Dashboard", "Demand Forecasting", "Inventory Control", "Customer Analytics", "Menu Optimization"],
       icon: ChefHat,
-      color: "bg-gradient-to-br from-purple-500 to-pink-500"
+      color: "bg-gradient-to-br from-[#1B5FA7] to-[#1B5FA7]"
     },
     {
       title: "For Customers",
       description: "Seamless ordering experience with personalized recommendations and loyalty rewards.",
       features: ["Browse Menu", "Smart Recommendations", "Order History", "Loyalty Program", "Dietary Preferences"],
       icon: ShoppingCart,
-      color: "bg-gradient-to-br from-blue-500 to-cyan-500"
+      color: "bg-gradient-to-br from-[#1B5FA7] to-[#1B5FA7]"
     }
   ];
 
@@ -92,8 +92,8 @@ const Home = () => {
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">
           <div className="flex items-center gap-2">
             <ChefHat className="h-8 w-8 text-primary" />
-            <h1 className="text-2xl font-bold bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent">
-              Canteen Compass
+            <h1 className="text-2xl font-bold bg-gradient-to-r from-primary to-[#1B5FA7] bg-clip-text text-transparent">
+              CanteenAI
             </h1>
           </div>
           <div className="flex gap-3">
@@ -162,7 +162,7 @@ const Home = () => {
       <section className="bg-white dark:bg-slate-900 py-16">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
-            <h3 className="text-3xl font-bold mb-4">Why Choose Canteen Compass?</h3>
+            <h3 className="text-3xl font-bold mb-4">Why Choose CanteenAI?</h3>
             <p className="text-muted-foreground max-w-2xl mx-auto">
               Proven results that transform your canteen operations
             </p>
@@ -245,11 +245,11 @@ const Home = () => {
 
       {/* CTA Section */}
       <section className="container mx-auto px-4 py-20 text-center">
-        <Card className="max-w-3xl mx-auto bg-gradient-to-br from-primary/10 to-purple-500/10 border-primary/20">
+        <Card className="max-w-3xl mx-auto bg-gradient-to-br from-primary/10 to-primary-500/10 border-primary/20">
           <CardHeader>
             <CardTitle className="text-4xl mb-4">Ready to Get Started?</CardTitle>
             <CardDescription className="text-lg">
-              Join hundreds of canteens already using Canteen Compass to optimize their operations
+              Join hundreds of canteens already using CanteenAI to optimize their operations
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -274,9 +274,9 @@ const Home = () => {
         <div className="container mx-auto px-4 text-center text-muted-foreground">
           <div className="flex items-center justify-center gap-2 mb-4">
             <ChefHat className="h-6 w-6" />
-            <span className="font-semibold text-foreground">Canteen Compass</span>
+            <span className="font-semibold text-foreground">CanteenAI</span>
           </div>
-          <p>© 2025 Canteen Compass. All rights reserved.</p>
+          <p>© 2025 CanteenAI. All rights reserved.</p>
           <p className="mt-2">AI-Powered Canteen Management Solution</p>
         </div>
       </footer>

@@ -33,8 +33,10 @@ import { Plus, Pencil, Trash2, Users, Loader2 } from 'lucide-react';
 import { adminApi } from '@/lib/api';
 import { toast } from 'sonner';
 import { Sidebar } from '@/components/Layout/Sidebar';
+import { useAuth } from '@/contexts/AuthContext';
 
 const UserManagement = () => {
+  const { user: currentUser } = useAuth();
   const [users, setUsers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -46,6 +48,13 @@ const UserManagement = () => {
     role: 'student',
   });
   const [submitting, setSubmitting] = useState(false);
+  
+  const isManager = currentUser?.role === 'canteen_manager';
+  
+  // Filter users based on role - managers only see students
+  const filteredUsers = isManager 
+    ? users.filter(user => user.role === 'student') 
+    : users;
 
   useEffect(() => {
     fetchUsers();
@@ -94,6 +103,11 @@ const UserManagement = () => {
   };
 
   const handleEdit = (user: any) => {
+    // Managers can only edit students
+    if (isManager && user.role !== 'student') {
+      toast.error('You can only manage student accounts');
+      return;
+    }
     setEditingUser(user);
     setFormData({
       name: user.name,
@@ -104,7 +118,13 @@ const UserManagement = () => {
     setDialogOpen(true);
   };
 
-  const handleDelete = async (userId: number) => {
+  const handleDelete = async (userId: number, userRole?: string) => {
+    // Managers can only delete students
+    if (isManager && userRole !== 'student') {
+      toast.error('You can only manage student accounts');
+      return;
+    }
+    
     if (!confirm('Are you sure you want to delete this user?')) return;
 
     try {
@@ -152,7 +172,9 @@ const UserManagement = () => {
           <div className="mb-8">
             <h1 className="text-3xl font-bold mb-2">User Management</h1>
             <p className="text-muted-foreground">
-              Create and manage user accounts for students, managers, and admins
+              {isManager 
+                ? 'Manage student accounts'
+                : 'Create and manage user accounts for students, managers, and admins'}
             </p>
           </div>
 
@@ -162,10 +184,10 @@ const UserManagement = () => {
                 <div>
                   <CardTitle className="flex items-center gap-2">
                     <Users className="h-5 w-5" />
-                    All Users
+                    {isManager ? 'Student Users' : 'All Users'}
                   </CardTitle>
                   <CardDescription>
-                    {users.length} total users in the system
+                    {filteredUsers.length} {isManager ? 'student' : 'total'} users {isManager ? '' : 'in the system'}
                   </CardDescription>
                 </div>
                 <Dialog open={dialogOpen} onOpenChange={(open) => {
@@ -232,26 +254,28 @@ const UserManagement = () => {
                             </p>
                           </div>
                         )}
-                        <div className="space-y-2">
-                          <Label htmlFor="role">Role</Label>
-                          <Select
-                            value={formData.role}
-                            onValueChange={(value) =>
-                              setFormData({ ...formData, role: value })
-                            }
-                          >
-                            <SelectTrigger>
-                              <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="student">Student</SelectItem>
-                              <SelectItem value="canteen_manager">
-                                Canteen Manager
-                              </SelectItem>
-                              <SelectItem value="admin">Admin</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </div>
+                        {!isManager && (
+                          <div className="space-y-2">
+                            <Label htmlFor="role">Role</Label>
+                            <Select
+                              value={formData.role}
+                              onValueChange={(value) =>
+                                setFormData({ ...formData, role: value })
+                              }
+                            >
+                              <SelectTrigger>
+                                <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="student">Student</SelectItem>
+                                <SelectItem value="canteen_manager">
+                                  Canteen Manager
+                                </SelectItem>
+                                <SelectItem value="admin">Admin</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
+                        )}
                       </div>
                       <DialogFooter>
                         <Button
@@ -278,7 +302,7 @@ const UserManagement = () => {
                 <div className="text-center py-8">
                   <Loader2 className="h-8 w-8 animate-spin mx-auto text-muted-foreground" />
                 </div>
-              ) : users.length === 0 ? (
+              ) : filteredUsers.length === 0 ? (
                 <Alert>
                   <AlertDescription>
                     No users found. Create your first user to get started.
@@ -291,22 +315,24 @@ const UserManagement = () => {
                       <TableRow>
                         <TableHead>Name</TableHead>
                         <TableHead>Email</TableHead>
-                        <TableHead>Role</TableHead>
+                        {!isManager && <TableHead>Role</TableHead>}
                         <TableHead>Status</TableHead>
                         <TableHead>Created</TableHead>
                         <TableHead className="text-right">Actions</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {users.map((user) => (
+                      {filteredUsers.map((user) => (
                         <TableRow key={user.id}>
                           <TableCell className="font-medium">{user.name}</TableCell>
                           <TableCell>{user.email}</TableCell>
-                          <TableCell>
-                            <Badge className={getRoleBadgeColor(user.role)}>
-                              {getRoleLabel(user.role)}
-                            </Badge>
-                          </TableCell>
+                          {!isManager && (
+                            <TableCell>
+                              <Badge className={getRoleBadgeColor(user.role)}>
+                                {getRoleLabel(user.role)}
+                              </Badge>
+                            </TableCell>
+                          )}
                           <TableCell>
                             <Badge
                               variant={user.is_active ? 'default' : 'secondary'}
@@ -329,7 +355,7 @@ const UserManagement = () => {
                               <Button
                                 variant="ghost"
                                 size="sm"
-                                onClick={() => handleDelete(user.id)}
+                                onClick={() => handleDelete(user.id, user.role)}
                               >
                                 <Trash2 className="h-4 w-4 text-destructive" />
                               </Button>

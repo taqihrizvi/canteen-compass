@@ -20,16 +20,21 @@ import NotFound from "./pages/NotFound";
 // Admin Pages
 import Dashboard from "./pages/Dashboard";
 import Forecast from "./pages/Forecast";
+import AdminForecast from "./pages/AdminForecast";
 import Recommendations from "./pages/Recommendations";
 import Inventory from "./pages/Inventory";
 import Customers from "./pages/Customers";
 import Settings from "./pages/Settings";
 import UserManagement from "./pages/UserManagement";
+import Establishments from "./pages/Establishments";
+import MenuManagement from "./pages/MenuManagement";
+import Orders from "./pages/Orders";
 
 // Customer Pages
 import Menu from "./pages/Menu";
 import OrderHistory from "./pages/OrderHistory";
 import Profile from "./pages/Profile";
+import Checkout from "./pages/Checkout";
 
 const queryClient = new QueryClient();
 
@@ -51,7 +56,7 @@ const App = () => (
             <Route 
               path="/dashboard" 
               element={
-                <RoleProtectedRoute allowedRoles={['admin']}>
+                <RoleProtectedRoute allowedRoles={['admin', 'canteen_manager']}>
                   <Dashboard />
                 </RoleProtectedRoute>
               } 
@@ -59,23 +64,55 @@ const App = () => (
             <Route 
               path="/users" 
               element={
-                <RoleProtectedRoute allowedRoles={['admin']}>
+                <RoleProtectedRoute allowedRoles={['admin', 'canteen_manager']}>
                   <UserManagement />
+                </RoleProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/establishments" 
+              element={
+                <RoleProtectedRoute allowedRoles={['admin', 'canteen_manager']}>
+                  <Establishments />
                 </RoleProtectedRoute>
               } 
             />
             <Route 
               path="/forecast" 
               element={
-                <RoleProtectedRoute allowedRoles={['admin']}>
+                <RoleProtectedRoute allowedRoles={['admin', 'canteen_manager']}>
                   <Forecast />
+                </RoleProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/admin-forecast" 
+              element={
+                <RoleProtectedRoute allowedRoles={['admin', 'canteen_manager']}>
+                  <AdminForecast />
+                </RoleProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/menu-management" 
+              element={
+                <RoleProtectedRoute allowedRoles={['admin', 'canteen_manager']}>
+                  <MenuManagement />
+                </RoleProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/orders-management" 
+              element={
+                <RoleProtectedRoute allowedRoles={['admin', 'canteen_manager']}>
+                  <Orders />
                 </RoleProtectedRoute>
               } 
             />
             <Route 
               path="/recommendations" 
               element={
-                <RoleProtectedRoute allowedRoles={['admin']}>
+                <RoleProtectedRoute allowedRoles={['admin', 'canteen_manager']}>
                   <Recommendations />
                 </RoleProtectedRoute>
               } 
@@ -83,7 +120,7 @@ const App = () => (
             <Route 
               path="/inventory" 
               element={
-                <RoleProtectedRoute allowedRoles={['admin']}>
+                <RoleProtectedRoute allowedRoles={['admin', 'canteen_manager']}>
                   <Inventory />
                 </RoleProtectedRoute>
               } 
@@ -91,7 +128,7 @@ const App = () => (
             <Route 
               path="/customers" 
               element={
-                <RoleProtectedRoute allowedRoles={['admin']}>
+                <RoleProtectedRoute allowedRoles={['admin', 'canteen_manager']}>
                   <Customers />
                 </RoleProtectedRoute>
               } 
@@ -99,7 +136,7 @@ const App = () => (
             <Route 
               path="/settings" 
               element={
-                <RoleProtectedRoute allowedRoles={['admin']}>
+                <RoleProtectedRoute allowedRoles={['admin', 'canteen_manager']}>
                   <Settings />
                 </RoleProtectedRoute>
               } 
@@ -169,6 +206,16 @@ const App = () => (
                 <RoleProtectedRoute allowedRoles={['student']}>
                   <CustomerLayout>
                     <Profile />
+                  </CustomerLayout>
+                </RoleProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/checkout" 
+              element={
+                <RoleProtectedRoute allowedRoles={['student']}>
+                  <CustomerLayout>
+                    <Checkout />
                   </CustomerLayout>
                 </RoleProtectedRoute>
               } 

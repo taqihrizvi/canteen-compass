@@ -8,6 +8,14 @@ import authRoutes from './routes/authRoutes';
 import adminRoutes from './routes/adminRoutes';
 import studentRoutes from './routes/studentRoutes';
 import canteenManagerRoutes from './routes/canteenManagerRoutes';
+import menuRoutes from './routes/menuRoutes';
+import inventoryRoutes from './routes/inventoryRoutes';
+import comboRoutes from './routes/comboRoutes';
+import allergenRoutes from './routes/allergenRoutes';
+import dietaryPreferenceRoutes from './routes/dietaryPreferenceRoutes';
+import orderRoutes from './routes/orderRoutes';
+import feedbackRoutes from './routes/feedbackRoutes';
+import establishmentRoutes from './routes/establishmentRoutes';
 import { errorHandler } from './middleware/errorHandler';
 
 dotenv.config();
@@ -35,6 +43,14 @@ app.use('/api/auth', authRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/student', studentRoutes);
 app.use('/api/manager', canteenManagerRoutes);
+app.use('/api/menu', menuRoutes);
+app.use('/api/inventory', inventoryRoutes);
+app.use('/api/combos', comboRoutes);
+app.use('/api/allergens', allergenRoutes);
+app.use('/api/dietary-preferences', dietaryPreferenceRoutes);
+app.use('/api/orders', orderRoutes);
+app.use('/api/feedback', feedbackRoutes);
+app.use('/api/establishments', establishmentRoutes);
 
 // 404 handler
 app.use((req, res) => {

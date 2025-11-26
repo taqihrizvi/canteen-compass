@@ -8,7 +8,7 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    --background: 0 0% 98%;
+    --background: 215 38% 95%;
     --foreground: 222 47% 11%;
 
     --card: 0 0% 100%;
@@ -17,7 +17,7 @@ All colors MUST be HSL.
     --popover: 0 0% 100%;
     --popover-foreground: 222 47% 11%;
 
-    --primary: 278 80% 52%;
+    --primary: 211 72% 38%;
     --primary-foreground: 0 0% 100%;
 
     --secondary: 215 40% 25%;
@@ -26,8 +26,8 @@ All colors MUST be HSL.
     --muted: 220 13% 95%;
     --muted-foreground: 215 16% 47%;
 
-    --accent: 278 80% 96%;
-    --accent-foreground: 278 80% 52%;
+    --accent: 211 72% 96%;
+    --accent-foreground: 211 72% 38%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
@@ -40,11 +40,11 @@ All colors MUST be HSL.
 
     --border: 220 13% 91%;
     --input: 220 13% 91%;
-    --ring: 278 80% 52%;
+    --ring: 211 72% 38%;
 
     --radius: 0.5rem;
 
-    --gradient-primary: linear-gradient(135deg, hsl(278 80% 52%), hsl(290 80% 60%));
+    --gradient-primary: linear-gradient(135deg, hsl(211 72% 38%), hsl(211 72% 48%));
     --gradient-secondary: linear-gradient(135deg, hsl(215 40% 25%), hsl(225 45% 35%));
     
     --shadow-soft: 0 2px 8px -2px hsl(222 47% 11% / 0.1);
@@ -53,12 +53,12 @@ All colors MUST be HSL.
 
     --sidebar-background: 0 0% 100%;
     --sidebar-foreground: 222 47% 11%;
-    --sidebar-primary: 278 80% 52%;
+    --sidebar-primary: 211 72% 38%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 278 80% 96%;
-    --sidebar-accent-foreground: 278 80% 52%;
+    --sidebar-accent: 211 72% 96%;
+    --sidebar-accent-foreground: 211 72% 38%;
     --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 278 80% 52%;
+    --sidebar-ring: 211 72% 38%;
   }
 
   .dark {
@@ -71,7 +71,7 @@ All colors MUST be HSL.
     --popover: 215 40% 15%;
     --popover-foreground: 210 40% 98%;
 
-    --primary: 278 80% 60%;
+    --primary: 211 72% 45%;
     --primary-foreground: 0 0% 100%;
 
     --secondary: 215 40% 20%;
@@ -81,7 +81,7 @@ All colors MUST be HSL.
     --muted-foreground: 215 20% 65%;
 
     --accent: 215 40% 25%;
-    --accent-foreground: 278 80% 60%;
+    --accent-foreground: 211 72% 45%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
@@ -94,16 +94,16 @@ All colors MUST be HSL.
 
     --border: 215 40% 20%;
     --input: 215 40% 20%;
-    --ring: 278 80% 60%;
+    --ring: 211 72% 45%;
 
     --sidebar-background: 215 40% 15%;
     --sidebar-foreground: 210 40% 98%;
-    --sidebar-primary: 278 80% 60%;
+    --sidebar-primary: 211 72% 45%;
     --sidebar-primary-foreground: 0 0% 100%;
     --sidebar-accent: 215 40% 20%;
-    --sidebar-accent-foreground: 278 80% 60%;
+    --sidebar-accent-foreground: 211 72% 45%;
     --sidebar-border: 215 40% 20%;
-    --sidebar-ring: 278 80% 60%;
+    --sidebar-ring: 211 72% 45%;
   }
 }
 

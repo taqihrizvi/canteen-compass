@@ -22,6 +22,8 @@ CREATE TABLE menus (
     price DECIMAL(10, 2) NOT NULL,
     category VARCHAR(100),
     image_url TEXT,
+    allergens JSONB DEFAULT '[]'::jsonb,
+    stock INTEGER DEFAULT 0,
     is_available BOOLEAN DEFAULT TRUE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP

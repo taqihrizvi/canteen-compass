@@ -63,7 +63,7 @@ const Dashboard = () => {
         <Button 
           variant="outline" 
           onClick={() => showDemoNotifications('admin')}
-          className="gap-2"
+          className="gap-2 bg-white"
         >
           <Bell className="h-4 w-4" />
           Test Notifications

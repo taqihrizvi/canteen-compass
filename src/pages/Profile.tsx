@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -21,25 +21,114 @@ import {
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
+interface Allergen {
+  id: number;
+  name: string;
+  description: string;
+}
+
+interface DietaryPreference {
+  id: number;
+  name: string;
+  description: string;
+  icon: string;
+}
+
 const Profile = () => {
   const { user } = useAuth();
   const { toast } = useToast();
   
   const [name, setName] = useState(user?.name || '');
   const [email, setEmail] = useState(user?.email || '');
-  const [dietaryPrefs, setDietaryPrefs] = useState<string[]>([]);
+  const [dietaryPrefs, setDietaryPrefs] = useState<number[]>([]);
+  const [allergens, setAllergens] = useState<Allergen[]>([]);
+  const [selectedAllergens, setSelectedAllergens] = useState<number[]>([]);
+  const [loadingAllergens, setLoadingAllergens] = useState(true);
+  const [dietaryPreferences, setDietaryPreferences] = useState<DietaryPreference[]>([]);
+  const [loadingDietaryPrefs, setLoadingDietaryPrefs] = useState(true);
 
-  const dietaryOptions = [
-    { id: 'vegetarian', label: 'Vegetarian', icon: <Leaf className="h-4 w-4" /> },
-    { id: 'vegan', label: 'Vegan', icon: <Leaf className="h-4 w-4" /> },
-    { id: 'gluten-free', label: 'Gluten-Free', icon: <AlertCircle className="h-4 w-4" /> },
-    { id: 'dairy-free', label: 'Dairy-Free', icon: <Milk className="h-4 w-4" /> },
-    { id: 'halal', label: 'Halal', icon: <Star className="h-4 w-4" /> },
-    { id: 'low-calorie', label: 'Low Calorie', icon: <Flame className="h-4 w-4" /> },
-    { id: 'pescatarian', label: 'Pescatarian', icon: <Fish className="h-4 w-4" /> },
-  ];
+  const getIconComponent = (iconName: string) => {
+    const iconMap: Record<string, React.ReactNode> = {
+      'leaf': <Leaf className="h-4 w-4" />,
+      'alert-circle': <AlertCircle className="h-4 w-4" />,
+      'milk': <Milk className="h-4 w-4" />,
+      'star': <Star className="h-4 w-4" />,
+      'flame': <Flame className="h-4 w-4" />,
+      'fish': <Fish className="h-4 w-4" />
+    };
+    return iconMap[iconName] || <Star className="h-4 w-4" />;
+  };
 
-  const handleDietaryChange = (optionId: string) => {
+  useEffect(() => {
+    const fetchAllergens = async () => {
+      try {
+        const token = localStorage.getItem('accessToken');
+        const response = await fetch('http://localhost:3001/api/allergens', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        
+        if (response.ok) {
+          const data = await response.json();
+          setAllergens(data);
+        }
+      } catch (error) {
+        console.error('Error fetching allergens:', error);
+        toast({
+          title: "Error",
+          description: "Failed to load allergens",
+          variant: "destructive"
+        });
+      } finally {
+        setLoadingAllergens(false);
+      }
+    };
+
+    const fetchDietaryPreferences = async () => {
+      try {
+        const token = localStorage.getItem('accessToken');
+        const response = await fetch('http://localhost:3001/api/dietary-preferences', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        
+        if (response.ok) {
+          const data = await response.json();
+          setDietaryPreferences(data);
+        }
+      } catch (error) {
+        console.error('Error fetching dietary preferences:', error);
+        toast({
+          title: "Error",
+          description: "Failed to load dietary preferences",
+          variant: "destructive"
+        });
+      } finally {
+        setLoadingDietaryPrefs(false);
+      }
+    };
+
+    const fetchUserPreferences = async () => {
+      try {
+        const token = localStorage.getItem('accessToken');
+        const response = await fetch('http://localhost:3001/api/auth/me', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        
+        if (response.ok) {
+          const data = await response.json();
+          setSelectedAllergens(data.allergen_ids || []);
+          setDietaryPrefs(data.dietary_preference_ids || []);
+        }
+      } catch (error) {
+        console.error('Error fetching user preferences:', error);
+      }
+    };
+
+    fetchAllergens();
+    fetchDietaryPreferences();
+    fetchUserPreferences();
+  }, [toast]);
+
+  const handleDietaryChange = (optionId: number) => {
     setDietaryPrefs(prev =>
       prev.includes(optionId)
         ? prev.filter(id => id !== optionId)
@@ -47,12 +136,44 @@ const Profile = () => {
     );
   };
 
-  const handleSave = () => {
-    // TODO: Save to API
-    toast({
-      title: 'Profile updated!',
-      description: 'Your preferences have been saved successfully.',
-    });
+  const handleAllergenChange = (allergenId: number) => {
+    setSelectedAllergens(prev =>
+      prev.includes(allergenId)
+        ? prev.filter(id => id !== allergenId)
+        : [...prev, allergenId]
+    );
+  };
+
+  const handleSave = async () => {
+    try {
+      const token = localStorage.getItem('accessToken');
+      const response = await fetch('http://localhost:3001/api/auth/preferences', {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          allergenIds: selectedAllergens,
+          dietaryPreferenceIds: dietaryPrefs
+        })
+      });
+
+      if (response.ok) {
+        toast({
+          title: 'Profile updated!',
+          description: 'Your preferences have been saved successfully.',
+        });
+      } else {
+        throw new Error('Failed to update preferences');
+      }
+    } catch (error) {
+      toast({
+        title: 'Error',
+        description: 'Failed to save preferences. Please try again.',
+        variant: 'destructive'
+      });
+    }
   };
 
   const getInitials = (name: string) => {
@@ -68,14 +189,14 @@ const Profile = () => {
     bronze: { color: 'bg-orange-500', points: '0-99', benefits: 'Basic discounts' },
     silver: { color: 'bg-gray-400', points: '100-499', benefits: '5% off, priority support' },
     gold: { color: 'bg-yellow-500', points: '500-999', benefits: '10% off, free delivery' },
-    platinum: { color: 'bg-purple-500', points: '1000+', benefits: '15% off, exclusive menu' }
+    platinum: { color: 'bg-primary', points: '1000+', benefits: '15% off, exclusive menu' }
   };
 
   const currentTier = 'bronze';
   const tierInfo = loyaltyTiers[currentTier as keyof typeof loyaltyTiers];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-green-50">
+    <div className="min-h-screen bg-[#EDF2F9]">
       <div className="border-b bg-white/80 backdrop-blur-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <h1 className="text-3xl font-bold">My Profile</h1>
@@ -199,30 +320,84 @@ const Profile = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  {dietaryOptions.map((option) => (
-                    <div
-                      key={option.id}
-                      className="flex items-center space-x-3 p-3 border rounded-lg hover:border-primary transition-colors cursor-pointer"
-                      onClick={() => handleDietaryChange(option.id)}
-                    >
-                      <Checkbox
-                        id={option.id}
-                        checked={dietaryPrefs.includes(option.id)}
-                        onCheckedChange={() => handleDietaryChange(option.id)}
-                      />
-                      <label
-                        htmlFor={option.id}
-                        className="flex items-center gap-2 flex-1 cursor-pointer"
+                {loadingDietaryPrefs ? (
+                  <p className="text-sm text-muted-foreground">Loading preferences...</p>
+                ) : (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {dietaryPreferences.map((option) => (
+                      <div
+                        key={option.id}
+                        className="flex items-center space-x-3 p-3 border rounded-lg hover:border-primary transition-colors cursor-pointer"
+                        onClick={() => handleDietaryChange(option.id)}
                       >
-                        {option.icon}
-                        <span className="text-sm font-medium">{option.label}</span>
-                      </label>
-                    </div>
-                  ))}
-                </div>
+                        <Checkbox
+                          id={`dietary-${option.id}`}
+                          checked={dietaryPrefs.includes(option.id)}
+                          onCheckedChange={() => handleDietaryChange(option.id)}
+                        />
+                        <label
+                          htmlFor={`dietary-${option.id}`}
+                          className="flex items-center gap-2 flex-1 cursor-pointer"
+                        >
+                          {getIconComponent(option.icon)}
+                          <div>
+                            <span className="text-sm font-medium block">{option.name}</span>
+                            <span className="text-xs text-muted-foreground">{option.description}</span>
+                          </div>
+                        </label>
+                      </div>
+                    ))}
+                  </div>
+                )}
                 <Button onClick={handleSave} className="mt-4">
                   Update Preferences
+                </Button>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <AlertCircle className="h-5 w-5 text-red-500" />
+                  Allergen Information
+                </CardTitle>
+                <CardDescription>
+                  Select any allergens you need to avoid for safer meal recommendations
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                {loadingAllergens ? (
+                  <p className="text-sm text-muted-foreground">Loading allergens...</p>
+                ) : (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    {allergens.map((allergen) => (
+                      <div
+                        key={allergen.id}
+                        className="flex items-start space-x-3 p-3 border rounded-lg hover:border-primary transition-colors cursor-pointer"
+                        onClick={() => handleAllergenChange(allergen.id)}
+                      >
+                        <Checkbox
+                          id={`allergen-${allergen.id}`}
+                          checked={selectedAllergens.includes(allergen.id)}
+                          onCheckedChange={() => handleAllergenChange(allergen.id)}
+                        />
+                        <div className="flex-1">
+                          <label
+                            htmlFor={`allergen-${allergen.id}`}
+                            className="text-sm font-medium cursor-pointer block"
+                          >
+                            {allergen.name}
+                          </label>
+                          <p className="text-xs text-muted-foreground mt-1">
+                            {allergen.description}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+                <Button onClick={handleSave} className="mt-4">
+                  Save Allergen Preferences
                 </Button>
               </CardContent>
             </Card>

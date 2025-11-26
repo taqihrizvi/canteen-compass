@@ -10,16 +10,24 @@ import {
   Settings,
   ChefHat,
   LogOut,
-  UserCog
+  UserCog,
+  Building2,
+  BarChart3,
+  UtensilsCrossed,
+  ShoppingBag
 } from "lucide-react";
 
 const navigation = [
   { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
   { name: "User Management", href: "/users", icon: UserCog },
-  { name: "Sales Forecast", href: "/forecast", icon: TrendingUp },
-  { name: "Recommendations", href: "/recommendations", icon: Lightbulb },
-  { name: "Inventory", href: "/inventory", icon: Package },
-  { name: "Customers", href: "/customers", icon: Users },
+  { name: "Establishments", href: "/establishments", icon: Building2, hideForRoles: ["canteen_manager", "student"] },
+  { name: "Menu Management", href: "/menu-management", icon: UtensilsCrossed },
+  { name: "Orders", href: "/orders-management", icon: ShoppingBag },
+  { name: "Sales Forecast", href: "/forecast", icon: TrendingUp, hideForRoles: ["admin"] },
+  { name: "Forecast", href: "/admin-forecast", icon: BarChart3, hideForRoles: ["canteen_manager", "student"] },
+  { name: "Recommendations", href: "/recommendations", icon: Lightbulb, hideForRoles: ["admin"] },
+  { name: "Inventory", href: "/inventory", icon: Package, hideForRoles: ["admin"] },
+  { name: "Customers", href: "/customers", icon: Users, hideForRoles: ["admin"] },
   { name: "Settings", href: "/settings", icon: Settings },
 ];
 
@@ -51,7 +59,9 @@ export const Sidebar = () => {
 
         {/* Navigation */}
         <nav className="flex-1 px-3 py-4 space-y-1">
-          {navigation.map((item) => (
+          {navigation
+            .filter((item) => !item.hideForRoles?.includes(user?.role || ''))
+            .map((item) => (
             <NavLink
               key={item.name}
               to={item.href}
