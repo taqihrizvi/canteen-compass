@@ -3,7 +3,7 @@ import pool from '../config/database';
 
 export const createFeedback = async (req: Request, res: Response): Promise<void> => {
   const { order_id, rating, comment } = req.body;
-  
+
   if (!order_id || !rating) {
     res.status(400).json({ message: 'Order ID and rating are required' });
     return;

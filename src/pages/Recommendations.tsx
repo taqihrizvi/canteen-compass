@@ -9,12 +9,12 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
-import { 
-  Lightbulb, 
-  TrendingUp, 
-  Sparkles, 
-  Clock, 
-  Cloud, 
+import {
+  Lightbulb,
+  TrendingUp,
+  Sparkles,
+  Clock,
+  Cloud,
   Heart,
   Leaf,
   Users,
@@ -69,7 +69,7 @@ const Recommendations = () => {
       const response = await fetch('http://localhost:3001/api/combos', {
         headers: { 'Authorization': `Bearer ${token}` }
       });
-      
+
       if (response.ok) {
         const data = await response.json();
         setComboDealsList(data);
@@ -97,7 +97,7 @@ const Recommendations = () => {
     }
     setSelectedItems([]);
     setIsComboModalOpen(true);
-    
+
     // Fetch menu items
     await fetchMenuItems();
   };
@@ -109,9 +109,9 @@ const Recommendations = () => {
       const response = await fetch('http://localhost:3001/api/menu/menu-items', {
         headers: { 'Authorization': `Bearer ${token}` }
       });
-      
+
       if (!response.ok) throw new Error('Failed to fetch menu items');
-      
+
       const data = await response.json();
       setMenuItems(data);
     } catch (error) {
@@ -149,10 +149,10 @@ const Recommendations = () => {
     }, 0);
     const discountedPrice = totalPrice * 0.9; // 10% discount
     const savings = totalPrice - discountedPrice;
-    return { 
-      totalPrice: Number(totalPrice), 
-      discountedPrice: Number(discountedPrice), 
-      savings: Number(savings) 
+    return {
+      totalPrice: Number(totalPrice),
+      discountedPrice: Number(discountedPrice),
+      savings: Number(savings)
     };
   };
 
@@ -178,7 +178,7 @@ const Recommendations = () => {
     try {
       const token = localStorage.getItem('accessToken');
       const { discountedPrice, savings } = calculateComboPrice();
-      
+
       const comboData = {
         name: comboForm.name,
         description: comboForm.description,
@@ -199,12 +199,12 @@ const Recommendations = () => {
       if (!response.ok) {
         throw new Error('Failed to save combo');
       }
-      
+
       toast({
         title: "Success",
         description: `Combo "${comboForm.name}" saved successfully`,
       });
-      
+
       await fetchCombos();
       handleCloseModal();
     } catch (error) {
@@ -551,7 +551,7 @@ const Recommendations = () => {
                   <div className="flex-1">
                     <h3 className="text-xl font-bold text-white mb-2">Today's AI Insight</h3>
                     <p className="text-white/90 mb-4">
-                      Based on weather forecast (18°C, partly cloudy) and historical data, cold drinks and light meals 
+                      Based on weather forecast (18°C, partly cloudy) and historical data, cold drinks and light meals
                       are predicted to outperform by 28%. Consider promoting salads and cold beverages.
                     </p>
                     <Button variant="secondary" className="gap-2">
@@ -677,11 +677,10 @@ const Recommendations = () => {
                           <div
                             key={item.id}
                             onClick={() => handleSelectItem(item)}
-                            className={`p-3 rounded-lg border cursor-pointer transition-colors ${
-                              selectedItems.find(i => i.id === item.id)
+                            className={`p-3 rounded-lg border cursor-pointer transition-colors ${selectedItems.find(i => i.id === item.id)
                                 ? 'bg-muted border-muted cursor-not-allowed opacity-50'
                                 : 'hover:bg-accent hover:border-primary bg-background'
-                            }`}
+                              }`}
                           >
                             <div className="flex justify-between items-start">
                               <div>
@@ -759,8 +758,8 @@ const Recommendations = () => {
               <Button variant="outline" onClick={handleCloseModal}>
                 Cancel
               </Button>
-              <Button 
-                onClick={handleSaveCombo} 
+              <Button
+                onClick={handleSaveCombo}
                 className="bg-gradient-primary"
                 disabled={selectedItems.length < 2}
               >

@@ -122,7 +122,7 @@ const OrderHistory = () => {
           return null;
         }
       });
-      
+
       const feedbackResults = await Promise.all(feedbackPromises);
       const feedbackMap: Record<number, Feedback> = {};
       feedbackResults.forEach((feedback) => {
@@ -270,7 +270,7 @@ const OrderHistory = () => {
       ready: 'bg-blue-500 text-white hover:bg-blue-600',
       preparing: 'bg-orange-500 text-white hover:bg-orange-600',
     };
-    
+
     return (
       <Badge variant={variants[status] || 'secondary'} className={colors[status]}>
         {status.charAt(0).toUpperCase() + status.slice(1)}
@@ -280,18 +280,18 @@ const OrderHistory = () => {
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString('en-GB', { 
-      year: 'numeric', 
-      month: 'short', 
-      day: 'numeric' 
+    return date.toLocaleDateString('en-GB', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
     });
   };
 
   const formatTime = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleTimeString('en-GB', { 
-      hour: '2-digit', 
-      minute: '2-digit' 
+    return date.toLocaleTimeString('en-GB', {
+      hour: '2-digit',
+      minute: '2-digit'
     });
   };
 
@@ -411,11 +411,10 @@ const OrderHistory = () => {
                             {[1, 2, 3, 4, 5].map((star) => (
                               <Star
                                 key={star}
-                                className={`h-5 w-5 ${
-                                  star <= orderFeedback[order.id].rating
+                                className={`h-5 w-5 ${star <= orderFeedback[order.id].rating
                                     ? 'fill-yellow-400 text-yellow-400'
                                     : 'text-gray-300'
-                                }`}
+                                  }`}
                               />
                             ))}
                             <span className="ml-2 text-sm text-muted-foreground">
@@ -468,7 +467,7 @@ const OrderHistory = () => {
               How was your order? Share your experience
             </DialogDescription>
           </DialogHeader>
-          
+
           <div className="space-y-4 py-4">
             {/* Star Rating */}
             <div>
@@ -479,11 +478,10 @@ const OrderHistory = () => {
                 {[1, 2, 3, 4, 5].map((star) => (
                   <Star
                     key={star}
-                    className={`h-8 w-8 cursor-pointer transition-colors ${
-                      star <= (hoverRating || feedbackRating)
+                    className={`h-8 w-8 cursor-pointer transition-colors ${star <= (hoverRating || feedbackRating)
                         ? 'fill-yellow-400 text-yellow-400'
                         : 'text-gray-300 hover:text-yellow-200'
-                    }`}
+                      }`}
                     onClick={() => setFeedbackRating(star)}
                     onMouseEnter={() => setHoverRating(star)}
                     onMouseLeave={() => setHoverRating(0)}

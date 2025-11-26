@@ -13,7 +13,7 @@ export class OrderController {
   // Create a new order
   async createOrder(req: AuthRequest, res: Response) {
     const client = await pool.connect();
-    
+
     try {
       const userId = req.user?.id;
       const { items, subtotal, serviceFee, total, paymentMethod, notes } = req.body;
@@ -46,7 +46,7 @@ export class OrderController {
         // Ensure menu_name is never null or empty
         const menuName = item.title || item.name || 'Unknown Item';
         const menuId = item.id > 10000 ? null : item.id;
-        
+
         const itemResult = await client.query(
           `INSERT INTO order_items (order_id, menu_id, menu_name, price, quantity) 
            VALUES ($1, $2, $3, $4, $5) 

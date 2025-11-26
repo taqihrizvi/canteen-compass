@@ -30,19 +30,19 @@ const Login = () => {
 
     try {
       await login(email, password);
-      
+
       // Get the user to check their role
       const storedUser = localStorage.getItem('user');
       const user = storedUser ? JSON.parse(storedUser) : null;
-      
+
       toast({
         title: 'Welcome back!',
-        description: 
-          user?.role === 'admin' ? 'Redirecting to Dashboard...' : 
-          user?.role === 'canteen_manager' ? 'Redirecting to Manager Dashboard...' :
-          'Redirecting to Menu...',
+        description:
+          user?.role === 'admin' ? 'Redirecting to Dashboard...' :
+            user?.role === 'canteen_manager' ? 'Redirecting to Manager Dashboard...' :
+              'Redirecting to Menu...',
       });
-      
+
       // Redirect based on role
       if (user?.role === 'admin') {
         navigate('/dashboard');
@@ -67,17 +67,17 @@ const Login = () => {
       {/* Left Side - Branding & Features */}
       <div className="hidden lg:flex lg:w-1/2 flex-col justify-between p-12 bg-[#1B56A5] text-white relative overflow-hidden">
         <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxwYXRoIGQ9Ik0zNiAxOGMzLjMxNCAwIDYgMi42ODYgNiA2cy0yLjY4NiA2LTYgNi02LTIuNjg2LTYtNiAyLjY4Ni02IDYtNiIgc3Ryb2tlPSIjZmZmIiBzdHJva2Utb3BhY2l0eT0iLjEiLz48L2c+PC9zdmc+')] opacity-20"></div>
-        
+
         <div className="relative z-10">
-          <Button 
-            variant="ghost" 
+          <Button
+            variant="ghost"
             className="text-white hover:bg-white/20 mb-8"
             onClick={() => navigate('/')}
           >
             <ArrowLeft className="mr-2 h-4 w-4" />
             Back to Home
           </Button>
-          
+
           <div className="flex items-center gap-3 mb-6">
             <div className="w-12 h-12 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center">
               <ChefHat className="w-7 h-7" />
@@ -120,8 +120,8 @@ const Login = () => {
       {/* Right Side - Login Form */}
       <div className="flex-1 flex items-center justify-center p-4 sm:p-8">
         <div className="w-full max-w-md">
-          <Button 
-            variant="ghost" 
+          <Button
+            variant="ghost"
             className="lg:hidden mb-6"
             onClick={() => navigate('/')}
           >
@@ -212,9 +212,9 @@ const Login = () => {
               </CardContent>
 
               <CardFooter className="flex flex-col space-y-4">
-                <Button 
-                  type="submit" 
-                  className="w-full h-11 text-base font-semibold" 
+                <Button
+                  type="submit"
+                  className="w-full h-11 text-base font-semibold"
                   disabled={isLoading}
                 >
                   {isLoading ? (

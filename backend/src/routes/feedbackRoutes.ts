@@ -1,9 +1,9 @@
 import express from 'express';
 import { authenticateToken, authorizeRoles } from '../middleware/auth';
-import { 
-  createFeedback, 
-  getFeedbackByOrderId, 
-  getAllFeedback 
+import {
+  createFeedback,
+  getFeedbackByOrderId,
+  getAllFeedback
 } from '../controllers/feedbackController';
 
 const router = express.Router();

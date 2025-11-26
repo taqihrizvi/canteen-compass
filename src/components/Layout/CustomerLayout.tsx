@@ -69,11 +69,10 @@ export const CustomerLayout = ({ children }: CustomerLayoutProps) => {
                   <Link
                     key={item.name}
                     to={item.href}
-                    className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors ${
-                      isActive
+                    className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors ${isActive
                         ? 'bg-primary text-primary-foreground'
                         : 'hover:bg-muted'
-                    }`}
+                      }`}
                   >
                     <item.icon className="w-4 h-4" />
                     <span className="font-medium">{item.name}</span>
@@ -126,11 +125,10 @@ export const CustomerLayout = ({ children }: CustomerLayoutProps) => {
                     key={item.name}
                     to={item.href}
                     onClick={() => setMobileMenuOpen(false)}
-                    className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
-                      isActive
+                    className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${isActive
                         ? 'bg-primary text-primary-foreground'
                         : 'hover:bg-muted'
-                    }`}
+                      }`}
                   >
                     <item.icon className="w-5 h-5" />
                     <span className="font-medium">{item.name}</span>

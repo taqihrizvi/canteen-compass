@@ -7,12 +7,12 @@ import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { 
-  User, 
-  Mail, 
-  Star, 
-  Award, 
-  TrendingUp, 
+import {
+  User,
+  Mail,
+  Star,
+  Award,
+  TrendingUp,
   Leaf,
   AlertCircle,
   Flame,
@@ -37,7 +37,7 @@ interface DietaryPreference {
 const Profile = () => {
   const { user } = useAuth();
   const { toast } = useToast();
-  
+
   const [name, setName] = useState(user?.name || '');
   const [email, setEmail] = useState(user?.email || '');
   const [dietaryPrefs, setDietaryPrefs] = useState<number[]>([]);
@@ -66,7 +66,7 @@ const Profile = () => {
         const response = await fetch('http://localhost:3001/api/allergens', {
           headers: { 'Authorization': `Bearer ${token}` }
         });
-        
+
         if (response.ok) {
           const data = await response.json();
           setAllergens(data);
@@ -89,7 +89,7 @@ const Profile = () => {
         const response = await fetch('http://localhost:3001/api/dietary-preferences', {
           headers: { 'Authorization': `Bearer ${token}` }
         });
-        
+
         if (response.ok) {
           const data = await response.json();
           setDietaryPreferences(data);
@@ -112,7 +112,7 @@ const Profile = () => {
         const response = await fetch('http://localhost:3001/api/auth/me', {
           headers: { 'Authorization': `Bearer ${token}` }
         });
-        
+
         if (response.ok) {
           const data = await response.json();
           setSelectedAllergens(data.allergen_ids || []);
@@ -252,14 +252,14 @@ const Profile = () => {
                     <p className="text-xs text-muted-foreground">points</p>
                   </div>
                 </div>
-                
+
                 <div className="space-y-2">
                   <div className="flex justify-between text-sm">
                     <span>Progress to Gold</span>
                     <span className="font-medium">245/500</span>
                   </div>
                   <div className="h-2 bg-muted rounded-full overflow-hidden">
-                    <div 
+                    <div
                       className="h-full bg-gradient-to-r from-orange-500 to-yellow-500 transition-all"
                       style={{ width: '49%' }}
                     />

@@ -48,7 +48,7 @@ const Checkout = () => {
 
     try {
       const token = localStorage.getItem('accessToken');
-      
+
       const orderData = {
         items: cart,
         subtotal: subtotal,
@@ -72,12 +72,12 @@ const Checkout = () => {
       }
 
       const order = await response.json();
-      
+
       toast({
         title: "Order Placed Successfully!",
         description: `Order #${order.id} has been confirmed and will be ready soon.`,
       });
-      
+
       // Navigate to orders page to see the order
       navigate('/orders');
     } catch (error) {
@@ -272,8 +272,8 @@ const Checkout = () => {
                 </div>
               </CardContent>
               <CardFooter>
-                <Button 
-                  className="w-full" 
+                <Button
+                  className="w-full"
                   size="lg"
                   onClick={handlePlaceOrder}
                   disabled={processing}

@@ -570,7 +570,7 @@ const MenuManagement = () => {
                     <p className="text-2xl font-bold text-primary">£{typeof item.price === 'number' ? item.price.toFixed(2) : parseFloat(item.price).toFixed(2)}</p>
                   </div>
                 </div>
-                
+
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-3">
                   <div>
                     <p className="text-xs text-muted-foreground mb-1">Stock Available</p>
@@ -613,15 +613,15 @@ const MenuManagement = () => {
       </Card>
 
       {/* Edit Dialog */}
-      <FormDialog 
-        open={editDialogOpen} 
+      <FormDialog
+        open={editDialogOpen}
         onOpenChange={setEditDialogOpen}
         title="Edit Menu Item"
       />
 
       {/* Add Dialog */}
-      <FormDialog 
-        open={addDialogOpen} 
+      <FormDialog
+        open={addDialogOpen}
         onOpenChange={setAddDialogOpen}
         title="Add Menu Item"
       />

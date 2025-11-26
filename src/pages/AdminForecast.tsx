@@ -61,7 +61,7 @@ const AdminForecast = () => {
   // Map database establishment IDs to forecast data keys
   const getDataKeyForEstablishment = (establishmentId: string): string => {
     if (establishmentId === "all") return "all";
-    
+
     // Map numeric IDs (from database) to existing forecast data
     // Cycle through the available forecast datasets
     const forecastKeys = ["main-campus", "science-building", "library", "sports-center"];
@@ -69,7 +69,7 @@ const AdminForecast = () => {
     if (!isNaN(numericId)) {
       return forecastKeys[(numericId - 1) % forecastKeys.length];
     }
-    
+
     // If it's already a string key, use it
     return establishmentId;
   };
@@ -86,7 +86,7 @@ const AdminForecast = () => {
     const fetchEstablishments = async () => {
       try {
         const token = localStorage.getItem('accessToken');
-        
+
         if (!token) {
           console.warn('No authentication token found');
           setLoading(false);
@@ -103,7 +103,7 @@ const AdminForecast = () => {
         if (!response.ok) {
           const errorData = await response.json().catch(() => ({}));
           console.error('Establishments API error:', response.status, errorData);
-          
+
           if (response.status === 403 || response.status === 401) {
             // Token is invalid or expired, user might need to re-login
             // But don't show error toast, just use default data
@@ -115,7 +115,7 @@ const AdminForecast = () => {
         }
 
         const data: Establishment[] = await response.json();
-        
+
         // Transform database establishments to match the format needed
         const transformedEstablishments = data.map(est => ({
           id: est.id.toString(),
@@ -477,11 +477,11 @@ const AdminForecast = () => {
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement('a');
     const url = URL.createObjectURL(blob);
-    
+
     link.setAttribute('href', url);
     link.setAttribute('download', `forecast-report-${selectedEstName.replace(/\s+/g, '-').toLowerCase()}-${timestamp}.csv`);
     link.style.visibility = 'hidden';
-    
+
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -501,368 +501,368 @@ const AdminForecast = () => {
         </div>
       ) : (
         <div className="space-y-6">
-        {/* Header */}
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold mb-2">Sales Forecast</h1>
-            <p className="text-muted-foreground">AI-powered predictions using Prophet algorithm and historical data</p>
-          </div>
-          <div className="flex gap-3">
-            <Select value={selectedEstablishment} onValueChange={setSelectedEstablishment}>
-              <SelectTrigger className="w-[280px] bg-white">
-                <SelectValue placeholder="Select establishment" />
-              </SelectTrigger>
-              <SelectContent>
-                {establishments.map((establishment) => (
-                  <SelectItem key={establishment.id} value={establishment.id}>
-                    {establishment.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <Button variant="outline" className="gap-2">
-              <Calendar className="w-4 h-4" />
-              This Week
-            </Button>
-            <Button className="gap-2" onClick={handleExportCSV}>
-              <Download className="w-4 h-4" />
-              Export Report
-            </Button>
-          </div>
-        </div>
-
-        {/* Summary Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center gap-3 mb-3">
-                <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center">
-                  <TrendingUp className="w-5 h-5 text-white" />
-                </div>
-                <h3 className="font-semibold">Week Forecast</h3>
-              </div>
-              <p className="text-3xl font-bold mb-1">{currentData?.weekForecast}</p>
-              <p className="text-sm text-green-600 font-medium">{currentData?.weekGrowth} vs last week</p>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center gap-3 mb-3">
-                <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center">
-                  <Users className="w-5 h-5 text-white" />
-                </div>
-                <h3 className="font-semibold">Expected Customers</h3>
-              </div>
-              <p className="text-3xl font-bold mb-1">{currentData?.expectedCustomers}</p>
-              <p className="text-sm text-muted-foreground">{currentData?.avgCustomers} customers/day avg</p>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center gap-3 mb-3">
-                <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-green-500 to-emerald-500 flex items-center justify-center">
-                  <BarChart3 className="w-5 h-5 text-white" />
-                </div>
-                <h3 className="font-semibold">Forecast Accuracy</h3>
-              </div>
-              <p className="text-3xl font-bold mb-1">{currentData?.accuracy}</p>
-              <p className="text-sm text-green-600 font-medium">+2.1% improvement</p>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center gap-3 mb-3">
-                <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary to-blue-600 flex items-center justify-center">
-                  <Clock className="w-5 h-5 text-white" />
-                </div>
-                <h3 className="font-semibold">Confidence</h3>
-              </div>
-              <p className="text-3xl font-bold mb-1">{currentData?.confidence}</p>
-              <p className="text-sm text-muted-foreground">420 predicted sales</p>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* External Factors */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <AlertTriangle className="h-5 w-5 text-orange-500" />
-              External Factors Affecting Forecast
-            </CardTitle>
-            <CardDescription>Real-time factors influencing sales predictions</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-              {externalFactors.map((factor) => (
-                <div key={factor.factor} className="p-4 border rounded-lg">
-                  <div className={`flex items-center gap-2 mb-2 ${factor.color}`}>
-                    {factor.icon}
-                    <span className="font-semibold">{factor.factor}</span>
-                  </div>
-                  <p className="text-sm text-muted-foreground mb-1">{factor.status}</p>
-                  <Badge variant="secondary" className="text-xs">
-                    {factor.impact}
-                  </Badge>
-                </div>
-              ))}
+          {/* Header */}
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-3xl font-bold mb-2">Sales Forecast</h1>
+              <p className="text-muted-foreground">AI-powered predictions using Prophet algorithm and historical data</p>
             </div>
-          </CardContent>
-        </Card>
-
-        {/* Forecast Tabs */}
-        <Tabs defaultValue="daily" className="space-y-4">
-          <TabsList>
-            <TabsTrigger value="daily">Daily Forecast</TabsTrigger>
-            <TabsTrigger value="hourly">Hourly Breakdown</TabsTrigger>
-            <TabsTrigger value="category">By Category</TabsTrigger>
-            <TabsTrigger value="staffing">Staffing Plan</TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="daily" className="space-y-4">
-            <Card>
-              <CardHeader>
-                <CardTitle>7-Day Sales Forecast</CardTitle>
-                <CardDescription>Predicted vs actual sales with confidence levels</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <ResponsiveContainer width="100%" height={350}>
-                  <RechartsLineChart data={dailyForecast}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="day" />
-                    <YAxis />
-                    <Tooltip />
-                    <Legend />
-                    <Line
-                      type="monotone"
-                      dataKey="predicted"
-                      stroke="#f97316"
-                      strokeWidth={2}
-                      name="Predicted Sales (£)"
-                    />
-                    <Line
-                      type="monotone"
-                      dataKey="actual"
-                      stroke="#22c55e"
-                      strokeWidth={2}
-                      name="Actual Sales (£)"
-                    />
-                  </RechartsLineChart>
-                </ResponsiveContainer>
-
-                <div className="mt-6 space-y-3">
-                  {dailyForecast.map((day) => (
-                    <div key={day.day} className="flex items-center justify-between p-3 border rounded-lg">
-                      <div className="flex items-center gap-4">
-                        <span className="font-semibold w-12">{day.day}</span>
-                        <div className="flex items-center gap-4">
-                          <span className="text-sm">Predicted: <span className="font-bold">£{day.predicted}</span></span>
-                          {day.actual && (
-                            <span className="text-sm">Actual: <span className="font-bold text-green-600">£{day.actual}</span></span>
-                          )}
-                        </div>
-                      </div>
-                      {day.confidence === 0 ? (
-                        <Badge className="bg-red-500 text-white">Closed</Badge>
-                      ) : (
-                        <Badge variant="secondary">{day.confidence}% confidence</Badge>
-                      )}
-                    </div>
+            <div className="flex gap-3">
+              <Select value={selectedEstablishment} onValueChange={setSelectedEstablishment}>
+                <SelectTrigger className="w-[280px] bg-white">
+                  <SelectValue placeholder="Select establishment" />
+                </SelectTrigger>
+                <SelectContent>
+                  {establishments.map((establishment) => (
+                    <SelectItem key={establishment.id} value={establishment.id}>
+                      {establishment.name}
+                    </SelectItem>
                   ))}
+                </SelectContent>
+              </Select>
+              <Button variant="outline" className="gap-2">
+                <Calendar className="w-4 h-4" />
+                This Week
+              </Button>
+              <Button className="gap-2" onClick={handleExportCSV}>
+                <Download className="w-4 h-4" />
+                Export Report
+              </Button>
+            </div>
+          </div>
+
+          {/* Summary Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <Card>
+              <CardContent className="p-6">
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center">
+                    <TrendingUp className="w-5 h-5 text-white" />
+                  </div>
+                  <h3 className="font-semibold">Week Forecast</h3>
                 </div>
+                <p className="text-3xl font-bold mb-1">{currentData?.weekForecast}</p>
+                <p className="text-sm text-green-600 font-medium">{currentData?.weekGrowth} vs last week</p>
               </CardContent>
             </Card>
-          </TabsContent>
 
-          <TabsContent value="hourly" className="space-y-4">
             <Card>
-              <CardHeader>
-                <CardTitle>Hourly Sales & Customer Forecast</CardTitle>
-                <CardDescription>Peak hours and recommended staffing levels</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <ResponsiveContainer width="100%" height={350}>
-                  <AreaChart data={hourlyForecast}>
-                    <defs>
-                      <linearGradient id="colorSales" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.8} />
-                        <stop offset="95%" stopColor="#3b82f6" stopOpacity={0} />
-                      </linearGradient>
-                      <linearGradient id="colorCustomers" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#f97316" stopOpacity={0.8} />
-                        <stop offset="95%" stopColor="#f97316" stopOpacity={0} />
-                      </linearGradient>
-                    </defs>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="time" />
-                    <YAxis />
-                    <Tooltip />
-                    <Legend />
-                    <Area
-                      type="monotone"
-                      dataKey="sales"
-                      stroke="#3b82f6"
-                      fillOpacity={1}
-                      fill="url(#colorSales)"
-                      name="Sales (£)"
-                    />
-                    <Area
-                      type="monotone"
-                      dataKey="customers"
-                      stroke="#f97316"
-                      fillOpacity={1}
-                      fill="url(#colorCustomers)"
-                      name="Customers"
-                    />
-                  </AreaChart>
-                </ResponsiveContainer>
-
-                <div className="mt-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-                  {hourlyForecast.filter(h => h.sales > 200).map((hour) => (
-                    <div key={hour.time} className="p-4 border rounded-lg bg-orange-50/50">
-                      <div className="flex items-center gap-2 mb-2">
-                        <Clock className="h-4 w-4 text-orange-500" />
-                        <span className="font-semibold">{hour.time}</span>
-                        <Badge variant="destructive" className="ml-auto">Peak</Badge>
-                      </div>
-                      <div className="space-y-1 text-sm">
-                        <p>Sales: <span className="font-bold">£{hour.sales}</span></p>
-                        <p>Customers: <span className="font-bold">{hour.customers}</span></p>
-                        <p>Staff needed: <span className="font-bold">{hour.staff}</span></p>
-                      </div>
-                    </div>
-                  ))}
+              <CardContent className="p-6">
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center">
+                    <Users className="w-5 h-5 text-white" />
+                  </div>
+                  <h3 className="font-semibold">Expected Customers</h3>
                 </div>
+                <p className="text-3xl font-bold mb-1">{currentData?.expectedCustomers}</p>
+                <p className="text-sm text-muted-foreground">{currentData?.avgCustomers} customers/day avg</p>
               </CardContent>
             </Card>
-          </TabsContent>
 
-          <TabsContent value="category" className="space-y-4">
-            <div className="grid gap-4 md:grid-cols-2">
+            <Card>
+              <CardContent className="p-6">
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-green-500 to-emerald-500 flex items-center justify-center">
+                    <BarChart3 className="w-5 h-5 text-white" />
+                  </div>
+                  <h3 className="font-semibold">Forecast Accuracy</h3>
+                </div>
+                <p className="text-3xl font-bold mb-1">{currentData?.accuracy}</p>
+                <p className="text-sm text-green-600 font-medium">+2.1% improvement</p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardContent className="p-6">
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary to-blue-600 flex items-center justify-center">
+                    <Clock className="w-5 h-5 text-white" />
+                  </div>
+                  <h3 className="font-semibold">Confidence</h3>
+                </div>
+                <p className="text-3xl font-bold mb-1">{currentData?.confidence}</p>
+                <p className="text-sm text-muted-foreground">420 predicted sales</p>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* External Factors */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <AlertTriangle className="h-5 w-5 text-orange-500" />
+                External Factors Affecting Forecast
+              </CardTitle>
+              <CardDescription>Real-time factors influencing sales predictions</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                {externalFactors.map((factor) => (
+                  <div key={factor.factor} className="p-4 border rounded-lg">
+                    <div className={`flex items-center gap-2 mb-2 ${factor.color}`}>
+                      {factor.icon}
+                      <span className="font-semibold">{factor.factor}</span>
+                    </div>
+                    <p className="text-sm text-muted-foreground mb-1">{factor.status}</p>
+                    <Badge variant="secondary" className="text-xs">
+                      {factor.impact}
+                    </Badge>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Forecast Tabs */}
+          <Tabs defaultValue="daily" className="space-y-4">
+            <TabsList>
+              <TabsTrigger value="daily">Daily Forecast</TabsTrigger>
+              <TabsTrigger value="hourly">Hourly Breakdown</TabsTrigger>
+              <TabsTrigger value="category">By Category</TabsTrigger>
+              <TabsTrigger value="staffing">Staffing Plan</TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="daily" className="space-y-4">
               <Card>
                 <CardHeader>
-                  <CardTitle>Category Sales Forecast</CardTitle>
-                  <CardDescription>Predicted sales by menu category</CardDescription>
+                  <CardTitle>7-Day Sales Forecast</CardTitle>
+                  <CardDescription>Predicted vs actual sales with confidence levels</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className="space-y-4">
-                    {categoryForecast.map((cat) => (
-                      <div key={cat.category} className="space-y-2">
-                        <div className="flex items-center justify-between">
-                          <span className="font-medium">{cat.category}</span>
-                          <div className="flex items-center gap-2">
-                            <Badge variant={cat.trend.startsWith('+') ? 'default' : 'secondary'}>
-                              {cat.trend}
-                            </Badge>
-                            <span className="font-bold">{cat.predicted} sales</span>
+                  <ResponsiveContainer width="100%" height={350}>
+                    <RechartsLineChart data={dailyForecast}>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="day" />
+                      <YAxis />
+                      <Tooltip />
+                      <Legend />
+                      <Line
+                        type="monotone"
+                        dataKey="predicted"
+                        stroke="#f97316"
+                        strokeWidth={2}
+                        name="Predicted Sales (£)"
+                      />
+                      <Line
+                        type="monotone"
+                        dataKey="actual"
+                        stroke="#22c55e"
+                        strokeWidth={2}
+                        name="Actual Sales (£)"
+                      />
+                    </RechartsLineChart>
+                  </ResponsiveContainer>
+
+                  <div className="mt-6 space-y-3">
+                    {dailyForecast.map((day) => (
+                      <div key={day.day} className="flex items-center justify-between p-3 border rounded-lg">
+                        <div className="flex items-center gap-4">
+                          <span className="font-semibold w-12">{day.day}</span>
+                          <div className="flex items-center gap-4">
+                            <span className="text-sm">Predicted: <span className="font-bold">£{day.predicted}</span></span>
+                            {day.actual && (
+                              <span className="text-sm">Actual: <span className="font-bold text-green-600">£{day.actual}</span></span>
+                            )}
                           </div>
                         </div>
-                        <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
-                          <div
-                            className="h-full transition-all"
-                            style={{
-                              width: `${(cat.predicted / 450) * 100}%`,
-                              backgroundColor: cat.color
-                            }}
-                          />
+                        {day.confidence === 0 ? (
+                          <Badge className="bg-red-500 text-white">Closed</Badge>
+                        ) : (
+                          <Badge variant="secondary">{day.confidence}% confidence</Badge>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            <TabsContent value="hourly" className="space-y-4">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Hourly Sales & Customer Forecast</CardTitle>
+                  <CardDescription>Peak hours and recommended staffing levels</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <ResponsiveContainer width="100%" height={350}>
+                    <AreaChart data={hourlyForecast}>
+                      <defs>
+                        <linearGradient id="colorSales" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.8} />
+                          <stop offset="95%" stopColor="#3b82f6" stopOpacity={0} />
+                        </linearGradient>
+                        <linearGradient id="colorCustomers" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="5%" stopColor="#f97316" stopOpacity={0.8} />
+                          <stop offset="95%" stopColor="#f97316" stopOpacity={0} />
+                        </linearGradient>
+                      </defs>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="time" />
+                      <YAxis />
+                      <Tooltip />
+                      <Legend />
+                      <Area
+                        type="monotone"
+                        dataKey="sales"
+                        stroke="#3b82f6"
+                        fillOpacity={1}
+                        fill="url(#colorSales)"
+                        name="Sales (£)"
+                      />
+                      <Area
+                        type="monotone"
+                        dataKey="customers"
+                        stroke="#f97316"
+                        fillOpacity={1}
+                        fill="url(#colorCustomers)"
+                        name="Customers"
+                      />
+                    </AreaChart>
+                  </ResponsiveContainer>
+
+                  <div className="mt-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                    {hourlyForecast.filter(h => h.sales > 200).map((hour) => (
+                      <div key={hour.time} className="p-4 border rounded-lg bg-orange-50/50">
+                        <div className="flex items-center gap-2 mb-2">
+                          <Clock className="h-4 w-4 text-orange-500" />
+                          <span className="font-semibold">{hour.time}</span>
+                          <Badge variant="destructive" className="ml-auto">Peak</Badge>
                         </div>
-                        <div className="flex justify-between text-xs text-muted-foreground">
-                          <span>Margin: {cat.margin}</span>
-                          <span>Revenue: £{(cat.predicted * 5.5).toFixed(0)}</span>
+                        <div className="space-y-1 text-sm">
+                          <p>Sales: <span className="font-bold">£{hour.sales}</span></p>
+                          <p>Customers: <span className="font-bold">{hour.customers}</span></p>
+                          <p>Staff needed: <span className="font-bold">{hour.staff}</span></p>
                         </div>
                       </div>
                     ))}
                   </div>
                 </CardContent>
               </Card>
+            </TabsContent>
 
+            <TabsContent value="category" className="space-y-4">
+              <div className="grid gap-4 md:grid-cols-2">
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Category Sales Forecast</CardTitle>
+                    <CardDescription>Predicted sales by menu category</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-4">
+                      {categoryForecast.map((cat) => (
+                        <div key={cat.category} className="space-y-2">
+                          <div className="flex items-center justify-between">
+                            <span className="font-medium">{cat.category}</span>
+                            <div className="flex items-center gap-2">
+                              <Badge variant={cat.trend.startsWith('+') ? 'default' : 'secondary'}>
+                                {cat.trend}
+                              </Badge>
+                              <span className="font-bold">{cat.predicted} sales</span>
+                            </div>
+                          </div>
+                          <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
+                            <div
+                              className="h-full transition-all"
+                              style={{
+                                width: `${(cat.predicted / 450) * 100}%`,
+                                backgroundColor: cat.color
+                              }}
+                            />
+                          </div>
+                          <div className="flex justify-between text-xs text-muted-foreground">
+                            <span>Margin: {cat.margin}</span>
+                            <span>Revenue: £{(cat.predicted * 5.5).toFixed(0)}</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Top Performing Items</CardTitle>
+                    <CardDescription>Highest predicted sales tomorrow</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-4">
+                      {topItems.map((item, idx) => (
+                        <div key={item.name} className="flex items-center gap-4 p-3 border rounded-lg">
+                          <div className="flex items-center justify-center w-8 h-8 rounded-full bg-primary text-primary-foreground font-bold">
+                            {idx + 1}
+                          </div>
+                          <div className="flex-1">
+                            <p className="font-semibold">{item.name}</p>
+                            <p className="text-sm text-muted-foreground">
+                              {item.predicted} sales · £{item.revenue} revenue
+                            </p>
+                          </div>
+                          <Badge variant="secondary">{item.trend}</Badge>
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            </TabsContent>
+
+            <TabsContent value="staffing" className="space-y-4">
               <Card>
                 <CardHeader>
-                  <CardTitle>Top Performing Items</CardTitle>
-                  <CardDescription>Highest predicted sales tomorrow</CardDescription>
+                  <CardTitle>Optimized Staffing Recommendations</CardTitle>
+                  <CardDescription>Based on predicted customer volume and peak hours</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
-                    {topItems.map((item, idx) => (
-                      <div key={item.name} className="flex items-center gap-4 p-3 border rounded-lg">
-                        <div className="flex items-center justify-center w-8 h-8 rounded-full bg-primary text-primary-foreground font-bold">
-                          {idx + 1}
+                    {staffingRecommendation.map((shift) => (
+                      <div
+                        key={shift.shift}
+                        className={`p-4 border rounded-lg ${shift.status.includes('Increase') ? 'bg-orange-50 border-orange-200' :
+                          shift.status.includes('Decrease') ? 'bg-blue-50 border-blue-200' :
+                            'bg-green-50 border-green-200'
+                          }`}
+                      >
+                        <div className="flex items-center justify-between mb-2">
+                          <div className="flex items-center gap-2">
+                            <Clock className="h-5 w-5" />
+                            <span className="font-semibold">{shift.shift}</span>
+                          </div>
+                          <Badge
+                            variant={
+                              shift.status.includes('Increase') ? 'destructive' :
+                                shift.status.includes('Optimal') ? 'default' :
+                                  'secondary'
+                            }
+                          >
+                            {shift.status}
+                          </Badge>
                         </div>
-                        <div className="flex-1">
-                          <p className="font-semibold">{item.name}</p>
-                          <p className="text-sm text-muted-foreground">
-                            {item.predicted} sales · £{item.revenue} revenue
-                          </p>
+                        <div className="flex items-center gap-4 text-sm">
+                          <span>Current: <span className="font-bold">{shift.current}</span></span>
+                          <span>→</span>
+                          <span>Recommended: <span className="font-bold">{shift.recommended}</span></span>
                         </div>
-                        <Badge variant="secondary">{item.trend}</Badge>
                       </div>
                     ))}
                   </div>
-                </CardContent>
-              </Card>
-            </div>
-          </TabsContent>
 
-          <TabsContent value="staffing" className="space-y-4">
-            <Card>
-              <CardHeader>
-                <CardTitle>Optimized Staffing Recommendations</CardTitle>
-                <CardDescription>Based on predicted customer volume and peak hours</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {staffingRecommendation.map((shift) => (
-                    <div
-                      key={shift.shift}
-                      className={`p-4 border rounded-lg ${shift.status.includes('Increase') ? 'bg-orange-50 border-orange-200' :
-                          shift.status.includes('Decrease') ? 'bg-blue-50 border-blue-200' :
-                            'bg-green-50 border-green-200'
-                        }`}
-                    >
-                      <div className="flex items-center justify-between mb-2">
-                        <div className="flex items-center gap-2">
-                          <Clock className="h-5 w-5" />
-                          <span className="font-semibold">{shift.shift}</span>
-                        </div>
-                        <Badge
-                          variant={
-                            shift.status.includes('Increase') ? 'destructive' :
-                              shift.status.includes('Optimal') ? 'default' :
-                                'secondary'
-                          }
-                        >
-                          {shift.status}
-                        </Badge>
+                  <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                    <div className="flex items-start gap-3">
+                      <Users className="h-5 w-5 text-blue-600 mt-0.5" />
+                      <div>
+                        <h4 className="font-semibold text-blue-900 mb-1">Staffing Optimization Impact</h4>
+                        <p className="text-sm text-blue-800">
+                          Following these recommendations can reduce wait times by 18% during peak hours
+                          and save approximately £145 in labor costs per week while maintaining service quality.
+                        </p>
                       </div>
-                      <div className="flex items-center gap-4 text-sm">
-                        <span>Current: <span className="font-bold">{shift.current}</span></span>
-                        <span>→</span>
-                        <span>Recommended: <span className="font-bold">{shift.recommended}</span></span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-
-                <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                  <div className="flex items-start gap-3">
-                    <Users className="h-5 w-5 text-blue-600 mt-0.5" />
-                    <div>
-                      <h4 className="font-semibold text-blue-900 mb-1">Staffing Optimization Impact</h4>
-                      <p className="text-sm text-blue-800">
-                        Following these recommendations can reduce wait times by 18% during peak hours
-                        and save approximately £145 in labor costs per week while maintaining service quality.
-                      </p>
                     </div>
                   </div>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-        </Tabs>
-      </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+          </Tabs>
+        </div>
       )}
     </DashboardLayout>
   );

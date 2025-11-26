@@ -197,12 +197,12 @@ const Orders = () => {
   };
 
   const filteredOrders = orders.filter(order => {
-    const matchesSearch = 
+    const matchesSearch =
       order.id.toString().includes(searchQuery) ||
       order.student_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       order.student_email.toLowerCase().includes(searchQuery.toLowerCase()) ||
       order.student_id.toString().includes(searchQuery);
-    
+
     const matchesStatus = statusFilter === 'all' || order.status === statusFilter;
 
     return matchesSearch && matchesStatus;
@@ -440,11 +440,10 @@ const Orders = () => {
                           {[1, 2, 3, 4, 5].map((star) => (
                             <Star
                               key={star}
-                              className={`h-5 w-5 ${
-                                star <= orderFeedback[order.id].rating
+                              className={`h-5 w-5 ${star <= orderFeedback[order.id].rating
                                   ? 'fill-yellow-400 text-yellow-400'
                                   : 'text-gray-300'
-                              }`}
+                                }`}
                             />
                           ))}
                           <span className="ml-2 text-sm text-muted-foreground">

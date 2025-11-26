@@ -3,11 +3,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
-import { 
-  TrendingUp, 
-  Calendar, 
-  Download, 
-  AlertTriangle, 
+import {
+  TrendingUp,
+  Calendar,
+  Download,
+  AlertTriangle,
   Users,
   Clock,
   Sun,
@@ -238,23 +238,23 @@ const Forecast = () => {
                     <YAxis />
                     <Tooltip />
                     <Legend />
-                    <Line 
-                      type="monotone" 
-                      dataKey="predicted" 
-                      stroke="#f97316" 
+                    <Line
+                      type="monotone"
+                      dataKey="predicted"
+                      stroke="#f97316"
                       strokeWidth={2}
                       name="Predicted Sales (£)"
                     />
-                    <Line 
-                      type="monotone" 
-                      dataKey="actual" 
-                      stroke="#22c55e" 
+                    <Line
+                      type="monotone"
+                      dataKey="actual"
+                      stroke="#22c55e"
                       strokeWidth={2}
                       name="Actual Sales (£)"
                     />
                   </RechartsLineChart>
                 </ResponsiveContainer>
-                
+
                 <div className="mt-6 space-y-3">
                   {dailyForecast.map((day) => (
                     <div key={day.day} className="flex items-center justify-between p-3 border rounded-lg">
@@ -286,12 +286,12 @@ const Forecast = () => {
                   <AreaChart data={hourlyForecast}>
                     <defs>
                       <linearGradient id="colorSales" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.8}/>
-                        <stop offset="95%" stopColor="#3b82f6" stopOpacity={0}/>
+                        <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.8} />
+                        <stop offset="95%" stopColor="#3b82f6" stopOpacity={0} />
                       </linearGradient>
                       <linearGradient id="colorCustomers" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#f97316" stopOpacity={0.8}/>
-                        <stop offset="95%" stopColor="#f97316" stopOpacity={0}/>
+                        <stop offset="5%" stopColor="#f97316" stopOpacity={0.8} />
+                        <stop offset="95%" stopColor="#f97316" stopOpacity={0} />
                       </linearGradient>
                     </defs>
                     <CartesianGrid strokeDasharray="3 3" />
@@ -299,19 +299,19 @@ const Forecast = () => {
                     <YAxis />
                     <Tooltip />
                     <Legend />
-                    <Area 
-                      type="monotone" 
-                      dataKey="sales" 
-                      stroke="#3b82f6" 
-                      fillOpacity={1} 
+                    <Area
+                      type="monotone"
+                      dataKey="sales"
+                      stroke="#3b82f6"
+                      fillOpacity={1}
                       fill="url(#colorSales)"
                       name="Sales (£)"
                     />
-                    <Area 
-                      type="monotone" 
-                      dataKey="customers" 
-                      stroke="#f97316" 
-                      fillOpacity={1} 
+                    <Area
+                      type="monotone"
+                      dataKey="customers"
+                      stroke="#f97316"
+                      fillOpacity={1}
                       fill="url(#colorCustomers)"
                       name="Customers"
                     />
@@ -359,9 +359,9 @@ const Forecast = () => {
                           </div>
                         </div>
                         <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
-                          <div 
+                          <div
                             className="h-full transition-all"
-                            style={{ 
+                            style={{
                               width: `${(cat.predicted / 450) * 100}%`,
                               backgroundColor: cat.color
                             }}
@@ -413,24 +413,23 @@ const Forecast = () => {
               <CardContent>
                 <div className="space-y-4">
                   {staffingRecommendation.map((shift) => (
-                    <div 
-                      key={shift.shift} 
-                      className={`p-4 border rounded-lg ${
-                        shift.status.includes('Increase') ? 'bg-orange-50 border-orange-200' :
-                        shift.status.includes('Decrease') ? 'bg-blue-50 border-blue-200' :
-                        'bg-green-50 border-green-200'
-                      }`}
+                    <div
+                      key={shift.shift}
+                      className={`p-4 border rounded-lg ${shift.status.includes('Increase') ? 'bg-orange-50 border-orange-200' :
+                          shift.status.includes('Decrease') ? 'bg-blue-50 border-blue-200' :
+                            'bg-green-50 border-green-200'
+                        }`}
                     >
                       <div className="flex items-center justify-between mb-2">
                         <div className="flex items-center gap-2">
                           <Clock className="h-5 w-5" />
                           <span className="font-semibold">{shift.shift}</span>
                         </div>
-                        <Badge 
+                        <Badge
                           variant={
                             shift.status.includes('Increase') ? 'destructive' :
-                            shift.status.includes('Optimal') ? 'default' :
-                            'secondary'
+                              shift.status.includes('Optimal') ? 'default' :
+                                'secondary'
                           }
                         >
                           {shift.status}
@@ -451,7 +450,7 @@ const Forecast = () => {
                     <div>
                       <h4 className="font-semibold text-blue-900 mb-1">Staffing Optimization Impact</h4>
                       <p className="text-sm text-blue-800">
-                        Following these recommendations can reduce wait times by 18% during peak hours 
+                        Following these recommendations can reduce wait times by 18% during peak hours
                         and save approximately £145 in labor costs per week while maintaining service quality.
                       </p>
                     </div>

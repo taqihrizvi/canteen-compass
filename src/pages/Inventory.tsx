@@ -203,9 +203,9 @@ const Inventory = () => {
                   <div className="relative h-2 bg-muted rounded-full overflow-hidden">
                     <div
                       className={`absolute left-0 top-0 h-full rounded-full ${item.status === "critical" ? "bg-destructive" :
-                          item.status === "low" ? "bg-warning" :
-                            item.status === "overstock" ? "bg-muted-foreground" :
-                              "bg-success"
+                        item.status === "low" ? "bg-warning" :
+                          item.status === "overstock" ? "bg-muted-foreground" :
+                            "bg-success"
                         }`}
                       style={{ width: `${(item.current_stock / item.optimal_stock) * 100}%` }}
                     />

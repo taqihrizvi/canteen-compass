@@ -1,12 +1,12 @@
 import { NavLink } from "@/components/NavLink";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
-import { 
-  LayoutDashboard, 
-  TrendingUp, 
-  Lightbulb, 
-  Package, 
-  Users, 
+import {
+  LayoutDashboard,
+  TrendingUp,
+  Lightbulb,
+  Package,
+  Users,
   Settings,
   ChefHat,
   LogOut,
@@ -62,16 +62,16 @@ export const Sidebar = () => {
           {navigation
             .filter((item) => !item.hideForRoles?.includes(user?.role || ''))
             .map((item) => (
-            <NavLink
-              key={item.name}
-              to={item.href}
-              className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground transition-colors"
-              activeClassName="bg-sidebar-accent text-sidebar-accent-foreground font-medium"
-            >
-              <item.icon className="w-5 h-5" />
-              <span>{item.name}</span>
-            </NavLink>
-          ))}
+              <NavLink
+                key={item.name}
+                to={item.href}
+                className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground transition-colors"
+                activeClassName="bg-sidebar-accent text-sidebar-accent-foreground font-medium"
+              >
+                <item.icon className="w-5 h-5" />
+                <span>{item.name}</span>
+              </NavLink>
+            ))}
         </nav>
 
         {/* User section */}

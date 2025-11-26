@@ -48,12 +48,12 @@ const UserManagement = () => {
     role: 'student',
   });
   const [submitting, setSubmitting] = useState(false);
-  
+
   const isManager = currentUser?.role === 'canteen_manager';
-  
+
   // Filter users based on role - managers only see students
-  const filteredUsers = isManager 
-    ? users.filter(user => user.role === 'student') 
+  const filteredUsers = isManager
+    ? users.filter(user => user.role === 'student')
     : users;
 
   useEffect(() => {
@@ -124,7 +124,7 @@ const UserManagement = () => {
       toast.error('You can only manage student accounts');
       return;
     }
-    
+
     if (!confirm('Are you sure you want to delete this user?')) return;
 
     try {
@@ -166,13 +166,13 @@ const UserManagement = () => {
   return (
     <div className="min-h-screen bg-background flex">
       <Sidebar />
-      
+
       <div className="flex-1 ml-64">
         <div className="container mx-auto px-6 py-8">
           <div className="mb-8">
             <h1 className="text-3xl font-bold mb-2">User Management</h1>
             <p className="text-muted-foreground">
-              {isManager 
+              {isManager
                 ? 'Manage student accounts'
                 : 'Create and manage user accounts for students, managers, and admins'}
             </p>

@@ -55,8 +55,8 @@ export class ComboController {
       const { name, description, item_ids, price, savings } = req.body;
 
       if (!name || !item_ids || !Array.isArray(item_ids) || item_ids.length === 0 || !price) {
-        return res.status(400).json({ 
-          error: 'Name, item_ids (array), and price are required' 
+        return res.status(400).json({
+          error: 'Name, item_ids (array), and price are required'
         });
       }
 

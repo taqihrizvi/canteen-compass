@@ -53,172 +53,172 @@ const App = () => (
             <Route path="/not-authorized" element={<NotAuthorized />} />
 
             {/* Admin Routes */}
-            <Route 
-              path="/dashboard" 
+            <Route
+              path="/dashboard"
               element={
                 <RoleProtectedRoute allowedRoles={['admin', 'canteen_manager']}>
                   <Dashboard />
                 </RoleProtectedRoute>
-              } 
+              }
             />
-            <Route 
-              path="/users" 
+            <Route
+              path="/users"
               element={
                 <RoleProtectedRoute allowedRoles={['admin', 'canteen_manager']}>
                   <UserManagement />
                 </RoleProtectedRoute>
-              } 
+              }
             />
-            <Route 
-              path="/establishments" 
+            <Route
+              path="/establishments"
               element={
                 <RoleProtectedRoute allowedRoles={['admin', 'canteen_manager']}>
                   <Establishments />
                 </RoleProtectedRoute>
-              } 
+              }
             />
-            <Route 
-              path="/forecast" 
+            <Route
+              path="/forecast"
               element={
                 <RoleProtectedRoute allowedRoles={['admin', 'canteen_manager']}>
                   <Forecast />
                 </RoleProtectedRoute>
-              } 
+              }
             />
-            <Route 
-              path="/admin-forecast" 
+            <Route
+              path="/admin-forecast"
               element={
                 <RoleProtectedRoute allowedRoles={['admin', 'canteen_manager']}>
                   <AdminForecast />
                 </RoleProtectedRoute>
-              } 
+              }
             />
-            <Route 
-              path="/menu-management" 
+            <Route
+              path="/menu-management"
               element={
                 <RoleProtectedRoute allowedRoles={['admin', 'canteen_manager']}>
                   <MenuManagement />
                 </RoleProtectedRoute>
-              } 
+              }
             />
-            <Route 
-              path="/orders-management" 
+            <Route
+              path="/orders-management"
               element={
                 <RoleProtectedRoute allowedRoles={['admin', 'canteen_manager']}>
                   <Orders />
                 </RoleProtectedRoute>
-              } 
+              }
             />
-            <Route 
-              path="/recommendations" 
+            <Route
+              path="/recommendations"
               element={
                 <RoleProtectedRoute allowedRoles={['admin', 'canteen_manager']}>
                   <Recommendations />
                 </RoleProtectedRoute>
-              } 
+              }
             />
-            <Route 
-              path="/inventory" 
+            <Route
+              path="/inventory"
               element={
                 <RoleProtectedRoute allowedRoles={['admin', 'canteen_manager']}>
                   <Inventory />
                 </RoleProtectedRoute>
-              } 
+              }
             />
-            <Route 
-              path="/customers" 
+            <Route
+              path="/customers"
               element={
                 <RoleProtectedRoute allowedRoles={['admin', 'canteen_manager']}>
                   <Customers />
                 </RoleProtectedRoute>
-              } 
+              }
             />
-            <Route 
-              path="/settings" 
+            <Route
+              path="/settings"
               element={
                 <RoleProtectedRoute allowedRoles={['admin', 'canteen_manager']}>
                   <Settings />
                 </RoleProtectedRoute>
-              } 
+              }
             />
 
             {/* Canteen Manager Routes */}
-            <Route 
-              path="/manager/sales" 
+            <Route
+              path="/manager/sales"
               element={
                 <RoleProtectedRoute allowedRoles={['canteen_manager']}>
                   <Dashboard />
                 </RoleProtectedRoute>
-              } 
+              }
             />
-            <Route 
-              path="/manager/orders" 
+            <Route
+              path="/manager/orders"
               element={
                 <RoleProtectedRoute allowedRoles={['canteen_manager']}>
                   <Inventory />
                 </RoleProtectedRoute>
-              } 
+              }
             />
-            <Route 
-              path="/manager/menus" 
+            <Route
+              path="/manager/menus"
               element={
                 <RoleProtectedRoute allowedRoles={['canteen_manager']}>
                   <Recommendations />
                 </RoleProtectedRoute>
-              } 
+              }
             />
 
             {/* Student Routes */}
-            <Route 
-              path="/menu" 
+            <Route
+              path="/menu"
               element={
                 <RoleProtectedRoute allowedRoles={['student']}>
                   <CustomerLayout>
                     <Menu />
                   </CustomerLayout>
                 </RoleProtectedRoute>
-              } 
+              }
             />
             {/* Student Routes */}
-            <Route 
-              path="/menu" 
+            <Route
+              path="/menu"
               element={
                 <RoleProtectedRoute allowedRoles={['student']}>
                   <CustomerLayout>
                     <Menu />
                   </CustomerLayout>
                 </RoleProtectedRoute>
-              } 
+              }
             />
-            <Route 
-              path="/orders" 
+            <Route
+              path="/orders"
               element={
                 <RoleProtectedRoute allowedRoles={['student']}>
                   <CustomerLayout>
                     <OrderHistory />
                   </CustomerLayout>
                 </RoleProtectedRoute>
-              } 
+              }
             />
-            <Route 
-              path="/profile" 
+            <Route
+              path="/profile"
               element={
                 <RoleProtectedRoute allowedRoles={['student']}>
                   <CustomerLayout>
                     <Profile />
                   </CustomerLayout>
                 </RoleProtectedRoute>
-              } 
+              }
             />
-            <Route 
-              path="/checkout" 
+            <Route
+              path="/checkout"
               element={
                 <RoleProtectedRoute allowedRoles={['student']}>
                   <CustomerLayout>
                     <Checkout />
                   </CustomerLayout>
                 </RoleProtectedRoute>
-              } 
+              }
             />
 
             {/* Catch-all Route */}
